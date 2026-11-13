@@ -3,7 +3,7 @@
 Purpose: Tiger (product) -> Turtle (architect) -> Termite (developer) workflow for feature delivery. All agent/skill/schema/guide files are in English; human-facing deliverables follow `output_language` in `customize.toml` (default pt-BR).
 
 ## Map
-- `.claude/agents/` model-routing subagents; `.claude/skills/agent-*` the three agents; `.claude/hooks/` RTK hook
+- `.claude/agents/` model-routing subagents; `.claude/skills/{tiger,turtle,termite}` the three agents (invoked as `/tiger`, `/turtle`, `/termite`); `.claude/hooks/` RTK hook
 - `repos/<name>/` independent code repos (git-ignored)
 - `artifacts/active/<story>/{delivery,design,demand-context.json}`; `artifacts/archive/`
 - `knowledge/guides/{commons,backend,database,frontend}`, `knowledge/templates`, `knowledge/repositories/<repo>/graphify-out`

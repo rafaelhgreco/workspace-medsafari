@@ -1,5 +1,5 @@
 ---
-name: agent-termite-developer
+name: termite
 description: Termite, developer agent: PLAN, CODE (TDD), VERIFY, then manual graphify request. Stub - content arrives in phase 2.
 ---
 # Termite

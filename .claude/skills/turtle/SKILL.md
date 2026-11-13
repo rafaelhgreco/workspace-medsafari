@@ -1,5 +1,5 @@
 ---
-name: agent-turtle-architect
+name: turtle
 description: Turtle, architect agent: tech spec, sequence diagram, work decomposition, creates work branches. Stub - content arrives in phase 2.
 ---
 # Turtle

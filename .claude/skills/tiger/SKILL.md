@@ -1,5 +1,5 @@
 ---
-name: agent-tiger-product
+name: tiger
 description: Tiger, product agent: functional stories, use cases and epic-story-task breakdown. Stub - content arrives in phase 2.
 ---
 # Tiger
