@@ -1,11 +1,332 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Agentic workflow map</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa do workflow agêntico</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#5c5c57;--card:#ffffff;--line:#d6d6cf;--gate:#b45309;--gate-bg:#fef3c7;--tiger:#c2410c;--turtle:#15803d;--termite:#1d4ed8;--human:#6b21a8;--code-bg:#f0efe9}
+@media (prefers-color-scheme:dark){:root{--bg:#141413;--fg:#ecebe6;--muted:#a3a29b;--card:#1d1d1b;--line:#3a3a36;--gate:#fbbf24;--gate-bg:#3a2d0b;--tiger:#fb923c;--turtle:#4ade80;--termite:#60a5fa;--human:#c4a1f5;--code-bg:#26261f}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header,main,footer{max-width:1040px;margin:0 auto;padding:0 16px}
+header{padding-top:28px}
+h1{margin:0 0 4px;font-size:1.9rem}
+h2{margin:40px 0 12px;font-size:1.35rem;border-bottom:2px solid var(--line);padding-bottom:6px}
+h3{margin:0 0 6px;font-size:1.05rem}
+p{margin:8px 0}
+.sub{color:var(--muted)}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0;padding:0;list-style:none}
+nav a{display:inline-block;padding:4px 12px;border:1px solid var(--line);border-radius:999px;color:var(--fg);text-decoration:none;font-size:.9rem;background:var(--card)}
+nav a:hover,nav a:focus{border-color:var(--gate);outline:none}
+code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em}
+code{background:var(--code-bg);padding:1px 5px;border-radius:4px}
+pre{background:var(--code-bg);padding:12px 14px;border-radius:8px;overflow-x:auto;line-height:1.45}
+pre code{background:none;padding:0}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.92rem;background:var(--card)}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
+th{background:var(--code-bg)}
+.scroll{overflow-x:auto}
+.diagram{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px}
+svg{width:100%;height:auto;display:block}
+svg text{fill:var(--fg);font:13px system-ui,sans-serif;text-anchor:middle}
+svg .sub{fill:var(--muted);font-size:11px}
+svg .gl{font-size:11px;font-weight:600;fill:var(--gate)}
+svg .node rect{fill:var(--card);stroke-width:2.5}
+svg .tiger rect{stroke:var(--tiger)}
+svg .turtle rect{stroke:var(--turtle)}
+svg .termite rect{stroke:var(--termite)}
+svg .human rect{stroke:var(--human);stroke-dasharray:6 4}
+svg .gate polygon{fill:var(--gate-bg);stroke:var(--gate);stroke-width:2.5}
+svg .gate text{font-weight:700;font-size:11px;fill:var(--gate)}
+svg .edge{fill:none;stroke:var(--muted);stroke-width:2}
+svg .retry{fill:none;stroke:var(--termite);stroke-width:2;stroke-dasharray:5 4}
+svg .arrowhead{fill:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;font-size:.88rem;color:var(--muted)}
+.chip{display:inline-block;padding:1px 8px;border-radius:999px;border:2px solid var(--line);font-size:.8rem;font-family:ui-monospace,Consolas,monospace;margin:2px 2px 2px 0;background:var(--card)}
+.chip.tiger{border-color:var(--tiger)}.chip.turtle{border-color:var(--turtle)}.chip.termite{border-color:var(--termite)}.chip.human{border-color:var(--human)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-top:5px solid var(--line);border-radius:10px;padding:14px 16px;break-inside:avoid}
+.card.tiger{border-top-color:var(--tiger)}.card.turtle{border-top-color:var(--turtle)}.card.termite{border-top-color:var(--termite)}
+.card dl{margin:8px 0 0}
+.card dt{font-weight:700;margin-top:8px;font-size:.85rem;text-transform:uppercase;letter-spacing:.03em;color:var(--muted)}
+.card dd{margin:2px 0 0}
+.card ul{margin:2px 0;padding-left:18px}
+.gate-note{background:var(--gate-bg);border-left:5px solid var(--gate);padding:8px 12px;border-radius:6px;margin:8px 0}
+.warn{background:var(--code-bg);border-left:5px solid var(--human);padding:8px 12px;border-radius:6px;margin:8px 0}
+footer{padding:24px 16px 40px;color:var(--muted);font-size:.85rem}
+@media print{
+  :root{--bg:#fff;--fg:#000;--muted:#333;--card:#fff;--line:#999;--code-bg:#eee;--gate-bg:#eee}
+  body{font-size:11pt}
+  nav{display:none}
+  h2{break-after:avoid}
+  table,pre,.diagram,.card{break-inside:avoid}
+  .cards{display:block}.card{margin-bottom:10px}
+  @page{margin:14mm}
+}
+</style>
 </head>
 <body>
-  <p>TODO(phase-2)</p>
+<header>
+  <h1>Mapa do workflow agêntico</h1>
+  <p class="sub">Tiger → Turtle → Termite · manual para o time · gerado em 2026-11-13 a partir dos <code>SKILL.md</code>, do schema <code>demand-context</code> e de <code>docs/decisions/phase-2-decisions.md</code>.</p>
+  <nav aria-label="Seções">
+    <a href="#visao">1 · Visão geral</a>
+    <a href="#estados">2 · Estados</a>
+    <a href="#agentes">3 · Agentes</a>
+    <a href="#pastas">4 · Pastas e entregáveis</a>
+    <a href="#convencoes">5 · Convenções</a>
+    <a href="#cheatsheet">6 · Cheat sheet</a>
+    <a href="#divergencias">7 · Divergências</a>
+  </nav>
+</header>
+<main>
+
+<section id="visao">
+<h2>1 · Visão geral do fluxo</h2>
+<p>Cada agente para em um <strong>gate humano</strong>. Um agente só grava a aprovação em <code>approvals[]</code> depois que você aprova explicitamente na conversa.</p>
+<div class="diagram">
+<svg viewBox="0 0 1000 450" role="img" aria-labelledby="fluxo-t fluxo-d">
+<title id="fluxo-t">Fluxo Tiger, Turtle, Termite com gates humanos</title>
+<desc id="fluxo-d">Demanda, comando tiger, gate de revisão, comando turtle, gate de revisão da spec com criação de branch, termite plan, gate do plano, code TDD, verify com retentativa de até duas vezes, gate do verify, graphify manual pelo humano, done e archived.</desc>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" class="arrowhead"/></marker></defs>
+
+<g class="node human" transform="translate(20,40)"><rect width="140" height="60" rx="8"/><text x="70" y="26">Demanda</text><text x="70" y="44" class="sub">texto · arquivo · ticket</text></g>
+<g class="node tiger" transform="translate(200,40)"><rect width="140" height="60" rx="8"/><text x="70" y="26">/tiger</text><text x="70" y="44" class="sub">histórias funcionais</text></g>
+<g class="gate"><text x="450" y="22" class="gl">revisão do Tiger</text><polygon points="395,70 450,35 505,70 450,105"/><text x="450" y="74">GATE</text></g>
+<g class="node turtle" transform="translate(560,40)"><rect width="140" height="60" rx="8"/><text x="70" y="26">/turtle</text><text x="70" y="44" class="sub">tech spec</text></g>
+<g class="gate"><text x="810" y="22" class="gl">revisão da spec + branch</text><polygon points="755,70 810,35 865,70 810,105"/><text x="810" y="74">GATE</text></g>
+
+<g class="node termite" transform="translate(20,200)"><rect width="140" height="60" rx="8"/><text x="70" y="26">/termite · PLAN</text><text x="70" y="44" class="sub">03-implementation-plan</text></g>
+<g class="gate"><text x="270" y="182" class="gl">aprova o plano</text><polygon points="215,230 270,195 325,230 270,265"/><text x="270" y="234">GATE</text></g>
+<g class="node termite" transform="translate(380,200)"><rect width="140" height="60" rx="8"/><text x="70" y="26">CODE · TDD</text><text x="70" y="44" class="sub">RED → GREEN → REFACTOR</text></g>
+<g class="node termite" transform="translate(560,200)"><rect width="140" height="60" rx="8"/><text x="70" y="26">VERIFY</text><text x="70" y="44" class="sub">04-verification-report</text></g>
+<g class="gate"><text x="810" y="182" class="gl">aprova o verify</text><polygon points="755,230 810,195 865,230 810,265"/><text x="810" y="234">GATE</text></g>
+
+<g class="node human" transform="translate(20,380)"><rect width="140" height="60" rx="8"/><text x="70" y="26">Graphify manual</text><text x="70" y="44" class="sub">humano roda e confirma</text></g>
+<g class="node termite" transform="translate(200,380)"><rect width="140" height="60" rx="8"/><text x="70" y="26">done</text><text x="70" y="44" class="sub">graphify confirmado</text></g>
+<g class="node termite" transform="translate(380,380)"><rect width="140" height="60" rx="8"/><text x="70" y="26">archived</text><text x="70" y="44" class="sub">→ artifacts/archive/</text></g>
+
+<path class="edge" d="M160 70 H198" marker-end="url(#ah)"/>
+<path class="edge" d="M340 70 H393" marker-end="url(#ah)"/>
+<path class="edge" d="M505 70 H558" marker-end="url(#ah)"/>
+<path class="edge" d="M700 70 H753" marker-end="url(#ah)"/>
+<path class="edge" d="M810 105 V150 H90 V198" marker-end="url(#ah)"/>
+<path class="edge" d="M160 230 H213" marker-end="url(#ah)"/>
+<path class="edge" d="M325 230 H378" marker-end="url(#ah)"/>
+<path class="edge" d="M520 230 H558" marker-end="url(#ah)"/>
+<path class="edge" d="M700 230 H753" marker-end="url(#ah)"/>
+<path class="retry" d="M630 262 C630 305 450 305 450 262" marker-end="url(#ah)"/>
+<text x="540" y="318" class="sub">falha no verify: volta ao TDD (máx. 2 retentativas)</text>
+<path class="edge" d="M810 265 V335 H90 V378" marker-end="url(#ah)"/>
+<path class="edge" d="M160 410 H198" marker-end="url(#ah)"/>
+<path class="edge" d="M340 410 H378" marker-end="url(#ah)"/>
+</svg>
+</div>
+<div class="legend">
+<span><span class="chip tiger">retângulo</span> etapa de agente (cor = agente)</span>
+<span><span class="chip human">tracejado</span> ação humana</span>
+<span><span class="chip" style="border-color:var(--gate)">losango</span> gate humano</span>
+</div>
+<h3 style="margin-top:14px">Em texto</h3>
+<ol>
+<li><code>/tiger</code> cria a demanda e escreve <code>01-functional-stories.md</code>. <strong>Gate:</strong> você revisa e aprova.</li>
+<li><code>/turtle</code> exige o graphify dos repositórios, escreve <code>02-tech-spec.md</code>. <strong>Gate:</strong> você aprova a spec; só então a branch <code>&lt;type&gt;/&lt;slug&gt;</code> é criada em cada repo afetado.</li>
+<li><code>/termite</code> faz o baseline e o <strong>PLAN</strong>. <strong>Gate:</strong> você aprova o plano.</li>
+<li>CODE com TDD (um commit Conventional por task), depois <strong>VERIFY</strong>. Falhou: volta ao TDD na task afetada (máximo 2 retentativas, depois para e reporta). <strong>Gate:</strong> você aprova o verify.</li>
+<li>O Termite pede o <strong>graphify manual</strong>; você roda e confirma. Status <code>done</code>, a pasta vai para <code>artifacts/archive/</code> e o status final é <code>archived</code>.</li>
+</ol>
+</section>
+
+<section id="estados">
+<h2>2 · Máquina de estados do <code>demand-context.json</code></h2>
+<p>Sequência de status (a cor indica quem opera o estado):</p>
+<p>
+<span class="chip">created</span> →
+<span class="chip tiger">tiger_in_progress</span> → <span class="chip tiger">tiger_review</span> →
+<span class="chip turtle">turtle_in_progress</span> → <span class="chip turtle">turtle_review</span> →
+<span class="chip termite">termite_plan</span> → <span class="chip termite">termite_code</span> ⇄ <span class="chip termite">termite_verify</span> →
+<span class="chip termite">awaiting_graphify</span> → <span class="chip termite">done</span> → <span class="chip termite">archived</span>
+</p>
+<div class="scroll"><table>
+<caption class="sub" style="text-align:left">Transições, quem as faz e a condição. Toda transição grava <code>status</code> e uma entrada <code>{from,to,at,by}</code> em <code>history[]</code>.</caption>
+<thead><tr><th>#</th><th>De → Para</th><th>Quem</th><th>Quando</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>(nenhum) → <code>created</code> → <code>tiger_in_progress</code></td><td>tiger · step-01</td><td>Após ler a demanda e receber suas respostas (uma rodada). O arquivo nasce já em <code>tiger_in_progress</code>, com as duas entradas no histórico.</td></tr>
+<tr><td>2</td><td><code>tiger_in_progress</code> → <code>tiger_review</code></td><td>tiger · step-05</td><td>Documento composto e rastreabilidade validada.</td></tr>
+<tr><td>2a</td><td><code>tiger_review</code> → <code>tiger_in_progress</code></td><td>tiger</td><td>Você pede mudanças em uma invocação posterior de <code>/tiger</code>.</td></tr>
+<tr><td>3</td><td><code>tiger_review</code> → <code>turtle_in_progress</code></td><td>turtle · step-01</td><td>Exige <code>approvals[]</code> com <code>stage: tiger_review</code>.</td></tr>
+<tr><td>4</td><td><code>turtle_in_progress</code> → <code>turtle_review</code></td><td>turtle · step-04</td><td>Spec completa (7 seções).</td></tr>
+<tr><td>5</td><td><code>turtle_review</code> → <code>termite_plan</code></td><td>turtle · step-05</td><td>Após aprovação (<code>stage: turtle_review</code>) e criação das branches registradas em <code>branches[]</code>.</td></tr>
+<tr><td>6</td><td><code>termite_plan</code> → <code>termite_code</code></td><td>termite · step-02</td><td>Você aprova o plano (<code>stage: termite_plan</code>).</td></tr>
+<tr><td>7</td><td><code>termite_code</code> → <code>termite_verify</code></td><td>termite · step-03</td><td>Todas as tasks implementadas e commitadas.</td></tr>
+<tr><td>8</td><td><code>termite_verify</code> → <code>termite_code</code></td><td>termite · step-04</td><td>Falha e <code>verifyRetries &lt; 2</code>: incrementa <code>verifyRetries</code> e volta à task afetada. Com 2 retentativas já usadas: para, status fica <code>termite_verify</code>.</td></tr>
+<tr><td>9</td><td><code>termite_verify</code> → <code>awaiting_graphify</code></td><td>termite · step-05</td><td>Você aprova o verify (<code>stage: termite_verify</code>); o Termite preenche <code>graphify.requestedAt</code> e <code>graphify.repos</code>.</td></tr>
+<tr><td>10</td><td><code>awaiting_graphify</code> → <code>done</code></td><td>termite · step-05</td><td>Você confirma explicitamente que rodou o graphify (<code>graphify.confirmedBy/At</code>).</td></tr>
+<tr><td>11</td><td><code>done</code> → <code>archived</code></td><td>termite · step-05</td><td>Depois de mover <code>artifacts/active/&lt;slug&gt;</code> para <code>artifacts/archive/&lt;slug&gt;</code>.</td></tr>
+</tbody></table></div>
+<p class="sub"><code>approvals[].stage</code> aceita: <code>tiger_review</code>, <code>turtle_review</code>, <code>termite_plan</code>, <code>termite_verify</code>. Cada agente recusa uma demanda cujo status não é o de entrada dele e indica o comando correto.</p>
+</section>
+
+<section id="agentes">
+<h2>3 · Os agentes</h2>
+<div class="cards">
+
+<article class="card tiger">
+<h3>Tiger · produto</h3>
+<dl>
+<dt>Comando</dt><dd><code>/tiger [slug]</code></dd>
+<dt>Entradas</dt><dd>A demanda (texto, arquivo ou ticket). Retomada em <code>tiger_in_progress</code>; decisão em <code>tiger_review</code>.</dd>
+<dt>Saídas</dt><dd><ul><li><code>artifacts/active/&lt;slug&gt;/demand-context.json</code></li><li><code>delivery/01-functional-stories.md</code> (BR, EP/ST/FT, AC em Gherkin, UC, rastreabilidade, Open questions)</li></ul>Status final: <code>tiger_review</code>.</dd>
+<dt>Skills e templates</dt><dd>Nenhuma skill vendorizada. Usa os templates de <code>knowledge/templates/</code> (work-rules, functional-history, use-cases, composition).</dd>
+<dt>Modelo por trabalho</dt><dd>Sonnet (sessão): análise, regras, histórias, redação. <code>file-operator</code> (Haiku): pastas, edição e validação do JSON. <code>deep-thinker</code>: análise isolada opcional.</dd>
+<dt>Gate</dt><dd>Revisão do <code>01-functional-stories.md</code> → <code>approvals[]</code> <code>tiger_review</code>.</dd>
+<dt>Passos</dt><dd>1 intake · 2 regras de negócio · 3 histórias · 4 casos de uso · 5 composição e handoff.</dd>
+</dl>
+</article>
+
+<article class="card turtle">
+<h3>Turtle · arquiteto</h3>
+<dl>
+<dt>Comando</dt><dd><code>/turtle &lt;slug&gt;</code></dd>
+<dt>Entradas</dt><dd>Status <code>tiger_review</code> com aprovação registrada; <code>01-functional-stories.md</code>; <code>graphify-out</code> de cada repo alvo (ausente: para e pede o graphify manual); guides <code>commons</code> + os do <code>demandType</code>; <code>design/</code> em demandas com front.</dd>
+<dt>Saídas</dt><dd><ul><li><code>delivery/02-tech-spec.md</code>: Context, Sources, Impact by layer, Sequence diagrams (Mermaid), Work decomposition, Risks, Inferences (<code>[INF-xx]</code>)</li><li>Branch <code>&lt;type&gt;/&lt;slug&gt;</code> em cada repo afetado, registrada em <code>branches[]</code></li></ul>Status final: <code>termite_plan</code>.</dd>
+<dt>Skills</dt><dd>Nenhuma skill vendorizada. Graphify primeiro; leitura pontual em <code>repos/</code> só onde o graphify apontar.</dd>
+<dt>Modelo por trabalho</dt><dd>Sonnet: impacto, spec, inferências. <code>deep-thinker</code>: investigação isolada de leitura. <code>file-operator</code> (Haiku): git (fetch, checkout, pull, criar branch), arquivos, validação.</dd>
+<dt>Gate</dt><dd>Revisão da spec (inferências com “precisa de confirmação” em destaque) → <code>turtle_review</code>. A branch só é criada depois da aprovação.</dd>
+</dl>
+</article>
+
+<article class="card termite">
+<h3>Termite · developer</h3>
+<dl>
+<dt>Comando</dt><dd><code>/termite &lt;slug&gt;</code></dd>
+<dt>Entradas</dt><dd>Status <code>termite_plan</code> com aprovação <code>turtle_review</code> e <code>branches[]</code> preenchido. Retomada em <code>termite_code</code>, <code>termite_verify</code> ou <code>awaiting_graphify</code>.</dd>
+<dt>Saídas</dt><dd><ul><li><code>delivery/03-implementation-plan.md</code></li><li><code>delivery/04-verification-report.md</code> (comandos reais, matriz AC/BR → teste → tipo → resultado)</li><li>Um commit Conventional por task, com <code>LEFTHOOK=0</code></li><li>Pasta movida para <code>artifacts/archive/</code></li></ul></dd>
+<dt>Skills usadas</dt><dd><code>writing-plans</code> (com overrides: salva em <code>03-implementation-plan.md</code>, sem handoff), <code>test-driven-development</code>, <code>verification-before-completion</code>. As skills vendorizadas não são editadas.</dd>
+<dt>Testes</dt><dd><ul><li><strong>Unitários sempre</strong>: <code>cargo nextest</code> + <code>mockall</code> (backend), Vitest <code>test:unit</code> e <code>test:component</code> (frontend).</li><li><strong>Integração (testcontainers + Postgres real)</strong> só quando a task toca backend + SQL: <code>crates/adapters-postgres/</code> ou <code>migrations/</code> (<code>test_scope: unit+integration</code>).</li><li><strong>Docker é requisito</strong> nesses casos (<code>docker info</code> no preflight; sem Docker o Termite para).</li></ul></dd>
+<dt>Modelo por trabalho</dt><dd>Sonnet: plano, testes e código. <code>file-operator</code> (Haiku): roda comandos, commits, git, <code>docker info</code>, <code>mv</code>, edição do JSON.</dd>
+<dt>Gates</dt><dd>Após o PLAN (<code>termite_plan</code>) · após o VERIFY (<code>termite_verify</code>) · confirmação do graphify. <strong>Verify:</strong> no máximo 2 retentativas (<code>verifyRetries</code>), depois para e reporta.</dd>
+<dt>Passos</dt><dd>1 preflight · 2 plano · 3 código TDD · 4 verify · 5 graphify e encerramento.</dd>
+</dl>
+</article>
+
+</div>
+</section>
+
+<section id="pastas">
+<h2>4 · Mapa de pastas e entregáveis</h2>
+<pre><code>.
+├── CLAUDE.md · README.md · skills-lock.md
+├── .claude/
+│   ├── settings.json              # modelo padrão sonnet + hook RTK
+│   ├── hooks/rtk-rewrite.sh       # fail-open
+│   ├── agents/                    # file-operator (haiku), deep-thinker (sonnet)
+│   └── skills/
+│       ├── tiger/ turtle/ termite/   # SKILL.md + customize.toml + steps/
+│       └── writing-plans, test-driven-development, verification-before-completion,
+│           design-taste-frontend, web-design-guidelines
+├── repos/&lt;nome&gt;/                  # repositórios git independentes (ignorados)
+├── artifacts/
+│   ├── active/&lt;slug&gt;/{delivery, design, demand-context.json}
+│   └── archive/&lt;slug&gt;/
+├── knowledge/
+│   ├── guides/{commons,backend,database,frontend}/  + GAPS.md
+│   ├── repositories/&lt;repo&gt;/graphify-out/          # gerado manualmente
+│   └── templates/
+├── schemas/demand-context.schema.json
+└── docs/{decisions, manuals, research}</code></pre>
+<div class="scroll"><table>
+<thead><tr><th>Entregável</th><th>Quem gera</th><th>Conteúdo</th></tr></thead>
+<tbody>
+<tr><td><code>delivery/01-functional-stories.md</code></td><td>Tiger</td><td>Regras, épicos/histórias/tarefas, AC, casos de uso, rastreabilidade</td></tr>
+<tr><td><code>delivery/02-tech-spec.md</code></td><td>Turtle</td><td>Impacto, diagramas, decomposição, riscos, inferências</td></tr>
+<tr><td><code>delivery/03-implementation-plan.md</code></td><td>Termite</td><td>Tasks com camada, repo, dependências, AC/BR e <code>test_scope</code></td></tr>
+<tr><td><code>delivery/04-verification-report.md</code></td><td>Termite</td><td>Comandos reais e matriz AC/BR → teste</td></tr>
+<tr><td><code>design/</code></td><td>Você (entrada)</td><td>Insumos de UI/UX: prints, links de Figma, referências</td></tr>
+</tbody></table></div>
+<p>Depois de <code>done</code>, <code>artifacts/active/&lt;slug&gt;/</code> é movida para <code>artifacts/archive/&lt;slug&gt;/</code>.</p>
+</section>
+
+<section id="convencoes">
+<h2>5 · Convenções</h2>
+<div class="scroll"><table>
+<thead><tr><th>Item</th><th>Convenção</th></tr></thead>
+<tbody>
+<tr><td>IDs</td><td><code>BR-xx</code> regra de negócio · <code>EP-xx</code> épico · <code>ST-xx</code> história · <code>FT-xx</code> tarefa funcional · <code>AC-xx</code> critério de aceite · <code>UC-xx</code> caso de uso · <code>INF-xx</code> inferência (Turtle) · <code>OQ-xx</code> pergunta aberta · <code>WD-xx</code> item de decomposição (Turtle)</td></tr>
+<tr><td>Id da demanda</td><td>O ticket informado; senão <code>DEM-&lt;YYYYMMDD&gt;-&lt;slug&gt;</code>. Slug: <code>[a-z0-9-]+</code>, até 40 caracteres.</td></tr>
+<tr><td>Cenários Gherkin</td><td>Cada cenário traz <code>@AC-xx @BR-xx</code>; todo BR tem ao menos um AC.</td></tr>
+<tr><td>Branch</td><td><code>&lt;type&gt;/&lt;slug&gt;</code>, tipos <code>feat fix refactor chore docs test perf build ci</code>. Criada pelo Turtle, só após a spec aprovada. Regex: <code>^(feat|fix|refactor|chore|docs|test|perf|build|ci)\/[a-z0-9-]+$</code></td></tr>
+<tr><td>Commits</td><td>Conventional Commits, um por task, feitos com <code>LEFTHOOK=0</code>. Os hooks rodam unificados no VERIFY: <code>lefthook run pre-commit</code>.</td></tr>
+<tr><td><code>test_scope</code></td><td><code>unit</code> sempre; <code>unit+integration</code> se a task toca <code>crates/adapters-postgres/</code> ou <code>migrations/</code>.</td></tr>
+<tr><td>Idioma</td><td>Entregáveis em <code>output_language</code> (padrão pt-BR); IDs, tags e headings fixos em inglês. Arquivos de agentes, skills, schema e guides em inglês.</td></tr>
+<tr><td>Modelos</td><td>Aliases, nunca IDs fixos: <code>haiku</code> para trabalho manual (<code>file-operator</code>), <code>sonnet</code> para raciocínio (<code>deep-thinker</code> e a sessão).</td></tr>
+<tr><td>Guides</td><td>Carrega <code>commons</code> sempre e os do <code>demandType</code> (<code>backend | frontend | database | fullstack</code>); lê primeiro <code>## Quick rules</code>.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="cheatsheet">
+<h2>6 · Cheat sheet</h2>
+<div class="cards">
+<article class="card">
+<h3>Iniciar uma demanda</h3>
+<ol>
+<li>Clone os repositórios alvo em <code>repos/&lt;nome&gt;/</code>.</li>
+<li>Garanta o graphify de cada repo em <code>knowledge/repositories/&lt;nome&gt;/graphify-out/</code> (o Turtle exige).</li>
+<li>Rode <code>/tiger &lt;slug&gt;</code> e descreva a demanda. Se houver UI, coloque prints e links em <code>design/</code>.</li>
+<li>Responda à rodada de perguntas do Tiger.</li>
+</ol>
+</article>
+<article class="card">
+<h3>Aprovar um gate</h3>
+<p>Leia o entregável indicado e responda de forma explícita (por exemplo “aprovado”). O agente grava <code>{stage, approver, date}</code> em <code>approvals[]</code> e avança. Para pedir mudanças, descreva-as: o status não avança.</p>
+<p>Em seguida rode o próximo comando: <code>/turtle &lt;slug&gt;</code>, depois <code>/termite &lt;slug&gt;</code>.</p>
+</article>
+<article class="card">
+<h3>Confirmar o graphify</h3>
+<ol>
+<li>O Termite lista os repositórios alterados e os caminhos de saída.</li>
+<li>Rode o graphify manualmente em cada um e grave em <code>knowledge/repositories/&lt;repo&gt;/graphify-out/</code>.</li>
+<li>Diga ao Termite que concluiu (com seu nome): ele grava <code>graphify.confirmedBy/At</code>, passa a <code>done</code> e arquiva.</li>
+</ol>
+</article>
+<article class="card">
+<h3>Instalar o RTK</h3>
+<p>Windows: <code>winget install rtk-ai.rtk</code>. macOS/Linux: <code>brew install rtk</code>. Reinicie o shell e verifique com <code>rtk --version</code> e <code>rtk gain</code> (deve mostrar o painel de economia). Nunca use <code>cargo install rtk</code> do crates.io (outro pacote). Sem o RTK, o hook do projeto não falha: o comando roda normalmente. Não rode <code>rtk init -g</code>.</p>
+</article>
+</div>
+<h3 style="margin-top:18px">Pré-requisitos da máquina</h3>
+<div class="scroll"><table>
+<thead><tr><th>Ferramenta</th><th>Para quê</th><th>Observação</th></tr></thead>
+<tbody>
+<tr><td>Git (e Git Bash no Windows)</td><td>Branches e commits; o hook do RTK roda em bash</td><td>Obrigatório</td></tr>
+<tr><td>Rust (<code>rustup</code>, <code>cargo</code>)</td><td>Backend (Axum, clippy, fmt)</td><td>Repos de backend</td></tr>
+<tr><td><code>sqlx-cli</code></td><td><code>sqlx migrate</code>, <code>cargo sqlx prepare</code></td><td>Repos com Postgres</td></tr>
+<tr><td><code>cargo-nextest</code></td><td>Perfis <code>unit</code> e <code>integration</code> (<code>.config/nextest.toml</code> no repo)</td><td>Repos de backend; o Termite para se faltar</td></tr>
+<tr><td>Node.js + npm</td><td>Angular, Vitest, ESLint, Prettier; <code>npx</code> para o ajv</td><td>Repos de frontend e validação do JSON</td></tr>
+<tr><td>Docker</td><td>testcontainers + Postgres</td><td>Só para tasks <code>unit+integration</code></td></tr>
+<tr><td><code>lefthook</code></td><td>Hooks de pré-commit nos dois repos</td><td>Rodado no VERIFY</td></tr>
+<tr><td>RTK</td><td>Compressão da saída de comandos shell</td><td>Veja o card acima</td></tr>
+</tbody></table></div>
+<p class="sub">Validar a demanda: <code>npx --yes -p ajv-cli@5 -p ajv-formats ajv validate --spec=draft2020 -c ajv-formats -s schemas/demand-context.schema.json -d artifacts/active/&lt;slug&gt;/demand-context.json</code></p>
+</section>
+
+<section id="divergencias">
+<h2>7 · Divergências e observações encontradas</h2>
+<p>Estas são diferenças entre as decisões da Fase 2 e o que os <code>SKILL.md</code>/steps realmente fazem hoje. O mapa acima descreve os agentes como estão escritos.</p>
+<div class="warn">
+<ol>
+<li><strong><code>design/</code> no Termite.</strong> A decisão diz que Turtle e Termite leem <code>design/</code> em demandas de frontend. Os steps do Turtle leem; os do Termite não citam <code>design/</code> (ele depende da spec).</li>
+<li><strong>Skills de frontend sem uso.</strong> <code>design-taste-frontend</code> e <code>web-design-guidelines</code> estão instaladas, mas nenhum SKILL.md ou step as referencia.</li>
+<li><strong>Integração no Verify.</strong> O Verify só roda o perfil <code>integration</code> se alguma task do plano for <code>unit+integration</code>; senão registra “não aplicável”. Docker é exigido apenas quando existem itens de persistência na spec.</li>
+<li><strong>Estado <code>created</code>.</strong> Não persiste como status atual: o Tiger grava <code>created</code> e <code>tiger_in_progress</code> de uma vez no histórico.</li>
+<li><strong>Pré-requisitos de repo.</strong> Os perfis do nextest e os scripts <code>test:unit</code>/<code>test:component</code> precisam existir em cada repo; se faltarem, o Termite para e pergunta.</li>
+<li><strong>Guides.</strong> Foram escritos sem os documentos do time (<code>knowledge/_sources/</code> ausente); itens <code>[PROPOSED]</code> e o conflito OC-01 (nextest × um container por binário) estão em <code>knowledge/guides/GAPS.md</code>.</li>
+</ol>
+</div>
+</section>
+
+</main>
+<footer>Mapa estático, sem recursos externos. Fontes: <code>.claude/skills/{tiger,turtle,termite}</code>, <code>schemas/demand-context.schema.json</code>, <code>docs/decisions/phase-2-decisions.md</code>.</footer>
 </body>
 </html>

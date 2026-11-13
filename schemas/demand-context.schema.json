@@ -40,6 +40,7 @@
       }
     },
     "status": { "$ref": "#/$defs/status" },
+    "verifyRetries": { "type": "integer", "default": 0, "minimum": 0, "maximum": 2, "description": "Number of Verify-to-TDD retries already used by Termite (max 2, then stop and report)." },
     "approvals": {
       "type": "array",
       "items": {
@@ -47,7 +48,7 @@
         "additionalProperties": false,
         "required": ["stage", "approver", "date"],
         "properties": {
-          "stage": { "enum": ["tiger_review", "turtle_review"] },
+          "stage": { "enum": ["tiger_review", "turtle_review", "termite_plan", "termite_verify"] },
           "approver": { "type": "string", "minLength": 1 },
           "date": { "type": "string", "format": "date-time" }
         }
@@ -79,7 +80,7 @@
             "verificationReport": { "const": "delivery/04-verification-report.md" }
           }
         },
-        "design": { "type": "array", "items": { "type": "string", "pattern": "^design/.+" } }
+        "design": { "type": "array", "description": "UI/UX inputs (screenshots, Figma links, references) read by Turtle and Termite on frontend demands. Paths under design/.", "items": { "type": "string", "pattern": "^design/.+" } }
       }
     },
     "history": {

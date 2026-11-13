@@ -3,7 +3,7 @@
 Purpose: Tiger (product) -> Turtle (architect) -> Termite (developer) workflow for feature delivery. All agent/skill/schema/guide files are in English; human-facing deliverables follow `output_language` in `customize.toml` (default pt-BR).
 
 ## Map
-- `.claude/agents/` model-routing subagents; `.claude/skills/agent-*` the three agents; `.claude/hooks/` RTK hook
+- `.claude/agents/` model-routing subagents; `.claude/skills/{tiger,turtle,termite}` the three agents (invoked as `/tiger`, `/turtle`, `/termite`); `.claude/hooks/` RTK hook
 - `repos/<name>/` independent code repos (git-ignored)
 - `artifacts/active/<story>/{delivery,design,demand-context.json}`; `artifacts/archive/`
 - `knowledge/guides/{commons,backend,database,frontend}`, `knowledge/templates`, `knowledge/repositories/<repo>/graphify-out`
@@ -11,7 +11,7 @@ Purpose: Tiger (product) -> Turtle (architect) -> Termite (developer) workflow f
 
 ## Flow and gates
 Tiger -> human review -> Turtle (+ branches) -> human review -> Termite (PLAN -> CODE TDD -> VERIFY) -> manual graphify request -> done.
-Human approval is mandatory between agents. Status machine is in the schema: created, tiger_in_progress, tiger_review, turtle_in_progress, turtle_review, termite_plan, termite_code, termite_verify, awaiting_graphify, done, archived.
+Human approval is mandatory between agents. Termite also pauses after PLAN and after VERIFY (approvals `termite_plan`, `termite_verify`). Status machine is in the schema: created, tiger_in_progress, tiger_review, turtle_in_progress, turtle_review, termite_plan, termite_code, termite_verify, awaiting_graphify, done, archived.
 
 ## Model routing
 - Manual work (create, move, rename, edit files, scaffolding, verification commands, git ops): `file-operator` (haiku).

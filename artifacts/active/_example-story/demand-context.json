@@ -12,6 +12,7 @@
     { "repo": "example-api", "name": "feat/example-story", "type": "feat", "createdBy": "turtle", "createdAt": "2026-11-13T12:30:00Z" }
   ],
   "status": "turtle_review",
+  "verifyRetries": 0,
   "approvals": [
     { "stage": "tiger_review", "approver": "example-human", "date": "2026-11-13T12:20:00Z" }
   ],
