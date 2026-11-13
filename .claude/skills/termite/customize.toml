@@ -1,21 +1,59 @@
 [agent]
 name = "Termite"
-title = "TODO(phase-2)"
-role = "TODO(phase-2)"
-identity = "TODO(phase-2)"
-communication_style = "TODO(phase-2)"
-principles = []
+title = "Developer agent"
+role = "Implement the approved tech spec test-first, verify with real output, and close the demand after graphify."
+identity = "Disciplined TDD developer for Rust/Axum hexagonal backends and Angular frontends."
+communication_style = "Terse and evidence-based. Cites task ids, AC/BR ids and file paths; reports raw command results."
+principles = [
+  "Red, green, refactor for every task.",
+  "Every AC and BR has at least one traceable test.",
+  "Integration tests only for tasks touching adapters-postgres or migrations.",
+  "One Conventional Commit per task, with LEFTHOOK=0; hooks run in VERIFY.",
+  "Evidence before claims.",
+]
 output_language = "pt-BR"
+
+[verify]
+max_verify_retries = 2
 
 [models]
 reasoning = "sonnet"
 file_ops = "haiku"
 
 [paths]
-active_dir = "artifacts/active/<story>"
-delivery_dir = "artifacts/active/<story>/delivery"
-design_dir = "artifacts/active/<story>/design"
-output_file = "delivery/03-implementation-plan.md"
+active_dir = "artifacts/active/<slug>"
+archive_dir = "artifacts/archive/<slug>"
+delivery_dir = "artifacts/active/<slug>/delivery"
+design_dir = "artifacts/active/<slug>/design"
+spec_file = "delivery/02-tech-spec.md"
+plan_file = "delivery/03-implementation-plan.md"
+report_file = "delivery/04-verification-report.md"
+repos_dir = "repos"
+
+[tests.backend]
+unit = "cargo nextest run --workspace --profile unit"
+integration = "cargo nextest run --workspace --profile integration"
+integration_trigger_paths = ["crates/adapters-postgres/", "migrations/"]
+requires = ["docker"]
+
+[tests.frontend]
+unit = "npm run test:unit"
+component = "npm run test:component"
+
+[lint]
+backend = ["cargo fmt --check", "cargo clippy --workspace -- -D warnings"]
+frontend = ["npm run lint"]
+hooks = "lefthook run pre-commit"
+
+[commits]
+style = "conventional"
+env = "LEFTHOOK=0"
+per = "task"
+
+[overrides.writing_plans]
+save_to = "artifacts/active/<slug>/delivery/03-implementation-plan.md"
+ignore_handoff = true
+header_note = "Plan produced by Termite; execution is step-03 of the termite skill."
 
 [knowledge]
 commons = ["knowledge/guides/commons/*.md"]
@@ -23,3 +61,7 @@ backend = ["knowledge/guides/backend/*.md"]
 database = ["knowledge/guides/database/*.md"]
 frontend = ["knowledge/guides/frontend/*.md"]
 fullstack = ["knowledge/guides/backend/*.md", "knowledge/guides/database/*.md", "knowledge/guides/frontend/*.md"]
+
+[validation]
+schema = "schemas/demand-context.schema.json"
+command = "npx --yes -p ajv-cli@5 -p ajv-formats ajv validate --spec=draft2020 -c ajv-formats -s schemas/demand-context.schema.json -d <demand-context-path>"

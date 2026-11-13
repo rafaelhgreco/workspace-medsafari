@@ -48,7 +48,7 @@
         "additionalProperties": false,
         "required": ["stage", "approver", "date"],
         "properties": {
-          "stage": { "enum": ["tiger_review", "turtle_review"] },
+          "stage": { "enum": ["tiger_review", "turtle_review", "termite_plan", "termite_verify"] },
           "approver": { "type": "string", "minLength": 1 },
           "date": { "type": "string", "format": "date-time" }
         }

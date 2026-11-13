@@ -35,7 +35,7 @@ Each task in the implementation plan declares `test_scope: unit | unit+integrati
 |---|---|
 | Invocation | `/tiger`, `/turtle`, `/termite` |
 | Persona | Lean: role + 3-5 operational principles, no roleplay |
-| Human gates | After Tiger, after Turtle (between agents); Termite adds checkpoints after Plan and after Verify |
+| Human gates | After Tiger, after Turtle (between agents); Termite adds checkpoints after Plan and after Verify. All four are recorded in `approvals[]` (stages `tiger_review`, `turtle_review`, `termite_plan`, `termite_verify`) |
 | Output language | `output_language` in `customize.toml` (default pt-BR); IDs, tags and fixed headings stay in English |
 | `design/` folder | UI/UX inputs (screenshots, Figma links, references); read by Turtle and Termite on frontend demands |
 

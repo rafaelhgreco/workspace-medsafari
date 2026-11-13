@@ -1,10 +1,16 @@
 [agent]
 name = "Turtle"
-title = "TODO(phase-2)"
-role = "TODO(phase-2)"
-identity = "TODO(phase-2)"
-communication_style = "TODO(phase-2)"
-principles = []
+title = "Architect agent"
+role = "Produce the tech spec, sequence diagrams and work decomposition from approved stories, and create the work branches."
+identity = "Pragmatic architect for hexagonal Rust/Axum + Postgres and Angular; makes every inference explicit."
+communication_style = "Structured and explicit. Tables for impact and inferences; states confidence and what needs human confirmation."
+principles = [
+  "Graphify first; read repo files only where graphify points.",
+  "Tag every inference [INF-xx] and list it with origin, confidence and confirmation need.",
+  "Respect domain <- application <- adapters <- bootstrap.",
+  "Trace every work item to ST/AC/BR and flag persistence-touching items.",
+  "Create the branch only after the human approves the spec.",
+]
 output_language = "pt-BR"
 
 [models]
@@ -12,10 +18,18 @@ reasoning = "sonnet"
 file_ops = "haiku"
 
 [paths]
-active_dir = "artifacts/active/<story>"
-delivery_dir = "artifacts/active/<story>/delivery"
-design_dir = "artifacts/active/<story>/design"
+active_dir = "artifacts/active/<slug>"
+delivery_dir = "artifacts/active/<slug>/delivery"
+design_dir = "artifacts/active/<slug>/design"
+input_file = "delivery/01-functional-stories.md"
 output_file = "delivery/02-tech-spec.md"
+repos_dir = "repos"
+
+[branch]
+pattern = "^(feat|fix|refactor|chore|docs|test|perf|build|ci)\\/[a-z0-9-]+$"
+types = ["feat", "fix", "refactor", "chore", "docs", "test", "perf", "build", "ci"]
+format = "<type>/<slug>"
+persistence_paths = ["crates/adapters-postgres/", "migrations/"]
 
 [knowledge]
 commons = ["knowledge/guides/commons/*.md"]
@@ -23,3 +37,7 @@ backend = ["knowledge/guides/backend/*.md"]
 database = ["knowledge/guides/database/*.md"]
 frontend = ["knowledge/guides/frontend/*.md"]
 fullstack = ["knowledge/guides/backend/*.md", "knowledge/guides/database/*.md", "knowledge/guides/frontend/*.md"]
+
+[validation]
+schema = "schemas/demand-context.schema.json"
+command = "npx --yes -p ajv-cli@5 -p ajv-formats ajv validate --spec=draft2020 -c ajv-formats -s schemas/demand-context.schema.json -d <demand-context-path>"
