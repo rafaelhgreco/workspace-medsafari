@@ -1,0 +1,30 @@
+{
+  "id": "EXAMPLE-001",
+  "slug": "example-story",
+  "title": "Example story (schema fixture)",
+  "createdAt": "2026-11-13T12:00:00Z",
+  "demandType": "fullstack",
+  "targetRepositories": [
+    { "name": "example-api", "path": "repos/example-api", "graphifyPath": "knowledge/repositories/example-api/graphify-out" },
+    { "name": "example-web", "path": "repos/example-web", "graphifyPath": "knowledge/repositories/example-web/graphify-out" }
+  ],
+  "branches": [
+    { "repo": "example-api", "name": "feat/example-story", "type": "feat", "createdBy": "turtle", "createdAt": "2026-11-13T12:30:00Z" }
+  ],
+  "status": "turtle_review",
+  "approvals": [
+    { "stage": "tiger_review", "approver": "example-human", "date": "2026-11-13T12:20:00Z" }
+  ],
+  "graphify": { "requestedAt": null, "repos": [], "confirmedBy": null, "confirmedAt": null },
+  "artifacts": {
+    "delivery": { "functionalStories": "delivery/01-functional-stories.md", "techSpec": "delivery/02-tech-spec.md" },
+    "design": []
+  },
+  "history": [
+    { "from": null, "to": "created", "at": "2026-11-13T12:00:00Z", "by": "human" },
+    { "from": "created", "to": "tiger_in_progress", "at": "2026-11-13T12:05:00Z", "by": "tiger" },
+    { "from": "tiger_in_progress", "to": "tiger_review", "at": "2026-11-13T12:15:00Z", "by": "tiger" },
+    { "from": "tiger_review", "to": "turtle_in_progress", "at": "2026-11-13T12:20:00Z", "by": "turtle" },
+    { "from": "turtle_in_progress", "to": "turtle_review", "at": "2026-11-13T12:40:00Z", "by": "turtle" }
+  ]
+}

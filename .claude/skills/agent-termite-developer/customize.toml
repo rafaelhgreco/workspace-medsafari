@@ -1,0 +1,25 @@
+[agent]
+name = "Termite"
+title = "TODO(phase-2)"
+role = "TODO(phase-2)"
+identity = "TODO(phase-2)"
+communication_style = "TODO(phase-2)"
+principles = []
+output_language = "pt-BR"
+
+[models]
+reasoning = "sonnet"
+file_ops = "haiku"
+
+[paths]
+active_dir = "artifacts/active/<story>"
+delivery_dir = "artifacts/active/<story>/delivery"
+design_dir = "artifacts/active/<story>/design"
+output_file = "delivery/03-implementation-plan.md"
+
+[knowledge]
+commons = ["knowledge/guides/commons/*.md"]
+backend = ["knowledge/guides/backend/*.md"]
+database = ["knowledge/guides/database/*.md"]
+frontend = ["knowledge/guides/frontend/*.md"]
+fullstack = ["knowledge/guides/backend/*.md", "knowledge/guides/database/*.md", "knowledge/guides/frontend/*.md"]

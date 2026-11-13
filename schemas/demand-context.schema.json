@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "demand-context.schema.json",
+  "title": "Demand context",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "slug", "title", "createdAt", "demandType", "targetRepositories", "branches", "status", "approvals", "graphify", "artifacts", "history"],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "title": { "type": "string", "minLength": 1 },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "demandType": { "enum": ["backend", "frontend", "database", "fullstack"] },
+    "targetRepositories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "path", "graphifyPath"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$" },
+          "path": { "type": "string", "pattern": "^repos/[A-Za-z0-9._-]+$" },
+          "graphifyPath": { "type": "string", "pattern": "^knowledge/repositories/[A-Za-z0-9._-]+/graphify-out$" }
+        }
+      }
+    },
+    "branches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["repo", "name", "type", "createdBy", "createdAt"],
+        "properties": {
+          "repo": { "type": "string" },
+          "name": { "type": "string", "pattern": "^(feat|fix|refactor|chore|docs|test|perf|build|ci)\\/[a-z0-9-]+$" },
+          "type": { "enum": ["feat", "fix", "refactor", "chore", "docs", "test", "perf", "build", "ci"] },
+          "createdBy": { "const": "turtle" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "status": { "$ref": "#/$defs/status" },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["stage", "approver", "date"],
+        "properties": {
+          "stage": { "enum": ["tiger_review", "turtle_review"] },
+          "approver": { "type": "string", "minLength": 1 },
+          "date": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "graphify": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requestedAt", "repos", "confirmedBy", "confirmedAt"],
+      "properties": {
+        "requestedAt": { "type": ["string", "null"], "format": "date-time" },
+        "repos": { "type": "array", "items": { "type": "string" } },
+        "confirmedBy": { "type": ["string", "null"] },
+        "confirmedAt": { "type": ["string", "null"], "format": "date-time" }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["delivery", "design"],
+      "properties": {
+        "delivery": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "functionalStories": { "const": "delivery/01-functional-stories.md" },
+            "techSpec": { "const": "delivery/02-tech-spec.md" },
+            "implementationPlan": { "const": "delivery/03-implementation-plan.md" },
+            "verificationReport": { "const": "delivery/04-verification-report.md" }
+          }
+        },
+        "design": { "type": "array", "items": { "type": "string", "pattern": "^design/.+" } }
+      }
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "at", "by"],
+        "properties": {
+          "from": { "oneOf": [{ "$ref": "#/$defs/status" }, { "type": "null" }] },
+          "to": { "$ref": "#/$defs/status" },
+          "at": { "type": "string", "format": "date-time" },
+          "by": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "status": {
+      "enum": ["created", "tiger_in_progress", "tiger_review", "turtle_in_progress", "turtle_review", "termite_plan", "termite_code", "termite_verify", "awaiting_graphify", "done", "archived"]
+    }
+  }
+}

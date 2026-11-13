@@ -1,0 +1,5 @@
+repos/*
+!repos/README.md
+node_modules/
+.DS_Store
+.claude/settings.local.json
