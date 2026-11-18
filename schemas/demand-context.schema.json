@@ -8,6 +8,8 @@
   "properties": {
     "id": { "type": "string", "minLength": 1 },
     "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "part": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "Part of a split story (e.g. backend, frontend). When set, the demand lives in artifacts/active/<slug>/<part>/ and slug is the workspace slug." },
+    "dependsOn": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9-]+$" }, "description": "Parts of the same slug that must be done or archived before Tiger/Turtle can proceed on this part." },
     "title": { "type": "string", "minLength": 1 },
     "createdAt": { "type": "string", "format": "date-time" },
     "demandType": { "enum": ["backend", "frontend", "database", "fullstack"] },

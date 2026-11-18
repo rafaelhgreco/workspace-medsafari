@@ -6,6 +6,7 @@ Purpose: Tiger (product) -> Turtle (architect) -> Termite (developer) workflow f
 - `.claude/agents/` model-routing subagents; `.claude/skills/{tiger,turtle,termite}` the three agents (invoked as `/tiger`, `/turtle`, `/termite`); `.claude/hooks/` RTK hook
 - `repos/<name>/` independent code repos (git-ignored)
 - `artifacts/active/<story>/{delivery,design,demand-context.json}`; `artifacts/archive/`
+- Split stories: `artifacts/active/<story>/{00-split.md,<part>/{delivery,design,demand-context.json}}`, commands take `<story>/<part>` (see `docs/decisions/split-stories.md`)
 - `knowledge/guides/{commons,backend,database,frontend}`, `knowledge/templates`, `knowledge/repositories/<repo>/graphify-out`
 - `schemas/demand-context.schema.json`; `docs/`; `skills-lock.md`
 
@@ -17,6 +18,9 @@ Human approval is mandatory between agents. Termite also pauses after PLAN and a
 - Manual work (create, move, rename, edit files, scaffolding, verification commands, git ops): `file-operator` (haiku).
 - Reasoning (investigation, analysis, architecture, review): `deep-thinker` (sonnet). Project default model is sonnet.
 - Use aliases only, never fixed model IDs.
+
+## Split stories
+A large story may be split into parts (e.g. backend then frontend) in the same workspace. Each part runs the full flow with its own `demand-context.json` (`part`, `dependsOn`); a part cannot start Tiger/Turtle until its `dependsOn` parts are `done`/`archived`. Branch: `<type>/<slug>-<part>`. Archive the workspace root only after the last part.
 
 ## Branches and commits
 - Turtle creates `<type>/<slug>` in every affected repo; type in feat|fix|refactor|chore|docs|test|perf|build|ci, slug `[a-z0-9-]+`.

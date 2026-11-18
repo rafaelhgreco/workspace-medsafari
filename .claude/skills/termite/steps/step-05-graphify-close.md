@@ -15,12 +15,12 @@ For each `branches[]` entry, count commits: `git -C repos/<repo> rev-list --coun
 ## 3. After the human confirms (explicitly)
 1. Set `graphify.confirmedBy` (the name the human gives) and `graphify.confirmedAt = now`.
 2. Transition `awaiting_graphify -> done` (history, `by: "termite"`); run `[validation].command`.
-3. file-operator: `mv artifacts/active/<slug> artifacts/archive/<slug>` (fail if the target exists).
-4. In the moved `artifacts/archive/<slug>/demand-context.json`: transition `done -> archived` (history), run `[validation].command` on the new path.
+3. file-operator: `mkdir -p` the parent and `mv artifacts/active/<demand> artifacts/archive/<demand>` (fail if the target exists). For a part (`<slug>/<part>`), the workspace root files (`00-split.md`, collected inputs) stay in `active/<slug>/` while sibling parts are still open; when this was the last open part, move the remaining workspace files to `artifacts/archive/<slug>/` and remove the empty `active/<slug>/`.
+4. In the moved `artifacts/archive/<demand>/demand-context.json`: transition `done -> archived` (history), run `[validation].command` on the new path.
 5. Do not commit anything in this repository unless the human asks.
 
 ## 4. Final report
-In `output_language`: demand id, repos and branches with commit counts, paths of the four deliverables (now under `artifacts/archive/<slug>/delivery/`), and the retries used.
+In `output_language`: demand id, repos and branches with commit counts, paths of the four deliverables (now under `artifacts/archive/<demand>/delivery/`), and the retries used.
 
 ## Done when
 The folder is under `artifacts/archive/`, status is `archived`, and the report is delivered.

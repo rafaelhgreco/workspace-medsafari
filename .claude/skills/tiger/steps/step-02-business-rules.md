@@ -14,7 +14,7 @@ Goal: list the business rules as `BR-xx`, using `knowledge/templates/template-wo
 - Every `inferred` rule must also become an Open question in step-05.
 
 ## 3. Write the file (delegate to file-operator, or write directly)
-Create `artifacts/active/<slug>/delivery/01-functional-stories.md` with:
+Create `artifacts/active/<demand>/delivery/01-functional-stories.md` with:
 1. `# <title>` (in `output_language`)
 2. One context line: `Demand <id> · <date>.` plus a one-paragraph summary.
 3. `## Business rules` and the table, with all HTML comments removed.

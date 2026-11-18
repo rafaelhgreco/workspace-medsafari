@@ -18,9 +18,9 @@ reasoning = "sonnet"
 file_ops = "haiku"
 
 [paths]
-active_dir = "artifacts/active/<slug>"
-delivery_dir = "artifacts/active/<slug>/delivery"
-design_dir = "artifacts/active/<slug>/design"
+active_dir = "artifacts/active/<demand>"
+delivery_dir = "artifacts/active/<demand>/delivery"
+design_dir = "artifacts/active/<demand>/design"
 output_file = "delivery/01-functional-stories.md"
 repos_dir = "repos"
 graphify_dir_pattern = "knowledge/repositories/<name>/graphify-out"

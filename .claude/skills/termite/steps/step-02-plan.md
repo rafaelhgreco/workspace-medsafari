@@ -4,7 +4,7 @@ Goal: produce `delivery/03-implementation-plan.md` and get human approval.
 
 ## 1. Use the vendored skill with overrides
 Invoke the `writing-plans` skill (it is vendored; never edit it). Apply these overrides, which win over the skill text:
-- Save to `artifacts/active/<slug>/delivery/03-implementation-plan.md` (NOT `docs/superpowers/plans/`).
+- Save to `artifacts/active/<demand>/delivery/03-implementation-plan.md` (NOT `docs/superpowers/plans/`).
 - Replace the header line "REQUIRED SUB-SKILL ..." with: `Plan produced by Termite; tasks are executed by step-03 of the termite skill.`
 - Skip the final execution handoff (executing-plans / subagent-driven-development are not used).
 - Input is `delivery/02-tech-spec.md` (Work decomposition) and `01-functional-stories.md`; the plan's `Spec:` line points to the spec.

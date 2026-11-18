@@ -21,10 +21,10 @@ reasoning = "sonnet"
 file_ops = "haiku"
 
 [paths]
-active_dir = "artifacts/active/<slug>"
-archive_dir = "artifacts/archive/<slug>"
-delivery_dir = "artifacts/active/<slug>/delivery"
-design_dir = "artifacts/active/<slug>/design"
+active_dir = "artifacts/active/<demand>"
+archive_dir = "artifacts/archive/<demand>"
+delivery_dir = "artifacts/active/<demand>/delivery"
+design_dir = "artifacts/active/<demand>/design"
 spec_file = "delivery/02-tech-spec.md"
 plan_file = "delivery/03-implementation-plan.md"
 report_file = "delivery/04-verification-report.md"
@@ -51,7 +51,7 @@ env = "LEFTHOOK=0"
 per = "task"
 
 [overrides.writing_plans]
-save_to = "artifacts/active/<slug>/delivery/03-implementation-plan.md"
+save_to = "artifacts/active/<demand>/delivery/03-implementation-plan.md"
 ignore_handoff = true
 header_note = "Plan produced by Termite; execution is step-03 of the termite skill."
 

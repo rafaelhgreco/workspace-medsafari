@@ -16,8 +16,10 @@ Turn a demand into verified functional stories: business rules, acceptance crite
 - Stop at the human gate; record an approval only after explicit human approval.
 
 ## Activation
-1. Read `customize.toml` in this folder. Argument: `<slug>` (optional).
-2. If `artifacts/active/<slug>/demand-context.json` exists, read it and follow the gate table. Otherwise this is a new demand: start at step-01.
+1. Read `customize.toml` in this folder. Argument: `<ref>` (optional).
+2. If `artifacts/active/<demand>/demand-context.json` exists, read it and follow the gate table. Otherwise this is a new demand: start at step-01.
+
+**Demand reference.** The argument is `<ref>`: `<slug>` (single demand) or `<slug>/<part>` (one part of a split story, e.g. `login-register/backend`). `<demand>` below means `<ref>` as a path under `artifacts/active/`. See `docs/decisions/split-stories.md`. Branch slug: `<slug>` for single demands, `<slug>-<part>` for a part.
 
 | Status | Action |
 |---|---|
@@ -49,7 +51,7 @@ Guides load lazily and only in a step that names them: `knowledge/guides/commons
 - `deep-thinker` (sonnet): optional isolated analysis of a large demand document.
 
 ## Outputs
-`artifacts/active/<slug>/delivery/01-functional-stories.md`; status `tiger_review`.
+`artifacts/active/<demand>/delivery/01-functional-stories.md`; status `tiger_review`.
 
 ## Handoff
-After the human approves: tell them to run `/turtle <slug>`.
+After the human approves: tell them to run `/turtle <ref>`.

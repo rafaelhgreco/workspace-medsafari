@@ -18,9 +18,9 @@ reasoning = "sonnet"
 file_ops = "haiku"
 
 [paths]
-active_dir = "artifacts/active/<slug>"
-delivery_dir = "artifacts/active/<slug>/delivery"
-design_dir = "artifacts/active/<slug>/design"
+active_dir = "artifacts/active/<demand>"
+delivery_dir = "artifacts/active/<demand>/delivery"
+design_dir = "artifacts/active/<demand>/design"
 input_file = "delivery/01-functional-stories.md"
 output_file = "delivery/02-tech-spec.md"
 repos_dir = "repos"
@@ -28,7 +28,7 @@ repos_dir = "repos"
 [branch]
 pattern = "^(feat|fix|refactor|chore|docs|test|perf|build|ci)\\/[a-z0-9-]+$"
 types = ["feat", "fix", "refactor", "chore", "docs", "test", "perf", "build", "ci"]
-format = "<type>/<slug>"
+format = "<type>/<branch-slug>"
 persistence_paths = ["crates/adapters-postgres/", "migrations/"]
 
 [knowledge]

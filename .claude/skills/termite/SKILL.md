@@ -16,8 +16,9 @@ Implement the approved tech spec test-first, verify it with real command output,
 - Evidence before claims: report real command output, never a summary of what "should" pass.
 
 ## Activation
-1. Read `customize.toml` in this folder. Argument: `<slug>`.
-2. Read `artifacts/active/<slug>/demand-context.json` and follow the gate table.
+1. Read `customize.toml` in this folder. Argument: `<ref>`.
+2. Read `artifacts/active/<demand>/demand-context.json` and follow the gate table.
+**Demand reference.** The argument is `<ref>`: `<slug>` (single demand) or `<slug>/<part>` (one part of a split story, e.g. `login-register/backend`). `<demand>` below means `<ref>` as a path under `artifacts/active/`. See `docs/decisions/split-stories.md`. Branch slug: `<slug>` for single demands, `<slug>-<part>` for a part.
 
 | Status | Action |
 |---|---|
