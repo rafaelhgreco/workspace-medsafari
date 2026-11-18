@@ -20,7 +20,7 @@
       "createdAt": "2026-11-18T19:10:20Z"
     }
   ],
-  "status": "termite_plan",
+  "status": "archived",
   "verifyRetries": 0,
   "approvals": [
     {
@@ -32,18 +32,32 @@
       "stage": "turtle_review",
       "approver": "Rafael Henrique",
       "date": "2026-11-18T19:10:09Z"
+    },
+    {
+      "stage": "termite_plan",
+      "approver": "Rafael Henrique",
+      "date": "2026-11-18T19:18:57Z"
+    },
+    {
+      "stage": "termite_verify",
+      "approver": "Rafael Henrique",
+      "date": "2026-11-18T19:41:44Z"
     }
   ],
   "graphify": {
-    "requestedAt": null,
-    "repos": [],
-    "confirmedBy": null,
-    "confirmedAt": null
+    "requestedAt": "2026-11-18T19:41:44Z",
+    "repos": [
+      "medsafari"
+    ],
+    "confirmedBy": "Rafael Henrique",
+    "confirmedAt": "2026-11-18T20:04:10Z"
   },
   "artifacts": {
     "delivery": {
       "functionalStories": "delivery/01-functional-stories.md",
-      "techSpec": "delivery/02-tech-spec.md"
+      "techSpec": "delivery/02-tech-spec.md",
+      "implementationPlan": "delivery/03-implementation-plan.md",
+      "verificationReport": "delivery/04-verification-report.md"
     },
     "design": []
   },
@@ -83,6 +97,36 @@
       "to": "termite_plan",
       "at": "2026-11-18T19:10:20Z",
       "by": "turtle"
+    },
+    {
+      "from": "termite_plan",
+      "to": "termite_code",
+      "at": "2026-11-18T19:18:57Z",
+      "by": "termite"
+    },
+    {
+      "from": "termite_code",
+      "to": "termite_verify",
+      "at": "2026-11-18T19:23:13Z",
+      "by": "termite"
+    },
+    {
+      "from": "termite_verify",
+      "to": "awaiting_graphify",
+      "at": "2026-11-18T19:41:44Z",
+      "by": "termite"
+    },
+    {
+      "from": "awaiting_graphify",
+      "to": "done",
+      "at": "2026-11-18T20:04:10Z",
+      "by": "termite"
+    },
+    {
+      "from": "done",
+      "to": "archived",
+      "at": "2026-11-18T20:04:10Z",
+      "by": "termite"
     }
   ]
 }
