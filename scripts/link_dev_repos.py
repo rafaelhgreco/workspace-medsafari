@@ -5,7 +5,7 @@ Config (default: scripts/dev-repos.json):
 
     {
       "repos": {
-        "medsafari": "~/projetos/medsafari"
+        "medsafari": "~/Documentos/medsafari"
       }
     }
 

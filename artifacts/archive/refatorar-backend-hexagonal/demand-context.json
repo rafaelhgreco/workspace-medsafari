@@ -1,0 +1,132 @@
+{
+  "id": "DEM-20261118-refatorar-backend-hexagonal",
+  "slug": "refatorar-backend-hexagonal",
+  "title": "Refatorar backend Rust para arquitetura hexagonal",
+  "createdAt": "2026-11-18T18:57:00Z",
+  "demandType": "backend",
+  "targetRepositories": [
+    {
+      "name": "medsafari",
+      "path": "repos/medsafari",
+      "graphifyPath": "knowledge/repositories/medsafari/graphify-out"
+    }
+  ],
+  "branches": [
+    {
+      "repo": "medsafari",
+      "name": "refactor/backend-hexagonal",
+      "type": "refactor",
+      "createdBy": "turtle",
+      "createdAt": "2026-11-18T19:10:20Z"
+    }
+  ],
+  "status": "archived",
+  "verifyRetries": 0,
+  "approvals": [
+    {
+      "stage": "tiger_review",
+      "approver": "Rafael Henrique",
+      "date": "2026-11-18T19:06:22Z"
+    },
+    {
+      "stage": "turtle_review",
+      "approver": "Rafael Henrique",
+      "date": "2026-11-18T19:10:09Z"
+    },
+    {
+      "stage": "termite_plan",
+      "approver": "Rafael Henrique",
+      "date": "2026-11-18T19:18:57Z"
+    },
+    {
+      "stage": "termite_verify",
+      "approver": "Rafael Henrique",
+      "date": "2026-11-18T19:41:44Z"
+    }
+  ],
+  "graphify": {
+    "requestedAt": "2026-11-18T19:41:44Z",
+    "repos": [
+      "medsafari"
+    ],
+    "confirmedBy": "Rafael Henrique",
+    "confirmedAt": "2026-11-18T20:04:10Z"
+  },
+  "artifacts": {
+    "delivery": {
+      "functionalStories": "delivery/01-functional-stories.md",
+      "techSpec": "delivery/02-tech-spec.md",
+      "implementationPlan": "delivery/03-implementation-plan.md",
+      "verificationReport": "delivery/04-verification-report.md"
+    },
+    "design": []
+  },
+  "history": [
+    {
+      "from": null,
+      "to": "created",
+      "at": "2026-11-18T18:57:00Z",
+      "by": "tiger"
+    },
+    {
+      "from": "created",
+      "to": "tiger_in_progress",
+      "at": "2026-11-18T18:57:00Z",
+      "by": "tiger"
+    },
+    {
+      "from": "tiger_in_progress",
+      "to": "tiger_review",
+      "at": "2026-11-18T18:58:18Z",
+      "by": "tiger"
+    },
+    {
+      "from": "tiger_review",
+      "to": "turtle_in_progress",
+      "at": "2026-11-18T19:06:22Z",
+      "by": "turtle"
+    },
+    {
+      "from": "turtle_in_progress",
+      "to": "turtle_review",
+      "at": "2026-11-18T19:07:49Z",
+      "by": "turtle"
+    },
+    {
+      "from": "turtle_review",
+      "to": "termite_plan",
+      "at": "2026-11-18T19:10:20Z",
+      "by": "turtle"
+    },
+    {
+      "from": "termite_plan",
+      "to": "termite_code",
+      "at": "2026-11-18T19:18:57Z",
+      "by": "termite"
+    },
+    {
+      "from": "termite_code",
+      "to": "termite_verify",
+      "at": "2026-11-18T19:23:13Z",
+      "by": "termite"
+    },
+    {
+      "from": "termite_verify",
+      "to": "awaiting_graphify",
+      "at": "2026-11-18T19:41:44Z",
+      "by": "termite"
+    },
+    {
+      "from": "awaiting_graphify",
+      "to": "done",
+      "at": "2026-11-18T20:04:10Z",
+      "by": "termite"
+    },
+    {
+      "from": "done",
+      "to": "archived",
+      "at": "2026-11-18T20:04:10Z",
+      "by": "termite"
+    }
+  ]
+}
