@@ -7,6 +7,7 @@
 - Rust test names: `ac_<nn>_br_<nn>_<behavior>` (for example `ac_02_br_01_rejects_late_cancellation`). [PROPOSED]
 - TypeScript test names: `it('AC-02 [BR-01] rejects late cancellation')`. [PROPOSED]
 - Structure each test as Arrange, Act, Assert, separated by blank lines.
+- Put unit tests in a `__tests__/` subfolder next to the code under test (Rust `<name>.<kind>.test.rs`, TypeScript `<name>.<kind>.spec.ts`); never inline in the source file. See `project-structure-general.md`.
 - Unit tests never touch network, filesystem, clock or database; inject them as ports/services and fake them.
 - Mock only your own ports (traits/services), never third-party types or the thing under test.
 - A task is `unit` unless it touches `crates/adapters-postgres/` or `migrations/`; then it is `unit+integration`.

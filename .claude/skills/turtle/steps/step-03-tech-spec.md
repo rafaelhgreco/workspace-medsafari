@@ -10,6 +10,7 @@ Goal: append the remaining sections to `delivery/02-tech-spec.md`.
 - One item per layer and repository; order by dependency (domain -> application -> adapters -> bootstrap -> frontend).
 - `persistence = yes` for items that touch `crates/adapters-postgres/` or `migrations/` (Termite uses this to set `test_scope`).
 - Every AC appears in at least one item's refs; every BR as well.
+- Name the files of each item with the same layout paths as the impact table (`<kind-folder>/<name>.<kind>.<ext>` and its `__tests__/` file), per `knowledge/guides/commons/project-structure-general.md`.
 
 ## 3. Risks
 `## Risks`: table `| ID | risk | impact | mitigation |`. Include migration risks (backward compatibility, locks, data backfill) when persistence items exist.

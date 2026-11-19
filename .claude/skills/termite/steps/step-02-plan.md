@@ -17,6 +17,7 @@ Invoke the `writing-plans` skill (it is vendored; never edit it). Apply these ov
 - depends_on: [<task numbers>]
 - covers: AC-xx, BR-xx
 - test_scope: unit | unit+integration
+- files: <code path(s)>; <test path(s) under __tests__/>
 - verify: <exact commands>
 - commit: <type>(<scope>): <subject>
 - [ ] write failing test ...
@@ -28,6 +29,7 @@ Invoke the `writing-plans` skill (it is vendored; never edit it). Apply these ov
 - `test_scope = unit+integration` if and only if the task touches `crates/adapters-postgres/` or `migrations/`; otherwise `unit`.
 - Tasks follow the Work decomposition order; each Work item maps to one or more tasks; every AC and BR is covered by some task.
 - A `unit+integration` task lists the integration test file under `crates/adapters-postgres/tests/`.
+- Every task lists its code and test paths already in the layout of `knowledge/guides/commons/project-structure-general.md` (`<kind-folder>/<name>.<kind>.<ext>`, unit test in `__tests__/`). A task that alters an item still in a legacy file (`ports.rs`, an inline `mod tests`) moves only that item, with its tests, in the same task.
 
 ## 3. Checkpoint (human gate)
 Show a table: task, layer, repo, covers, test_scope. Ask: approve or request changes.

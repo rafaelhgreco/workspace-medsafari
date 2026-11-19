@@ -34,6 +34,7 @@ Shell commands pass through the RTK hook; see docs/research/rtk-setup.md. Prefer
 
 ## Knowledge (lazy loading)
 Load `knowledge/guides/commons/` always, plus guides for the demand's `demandType` (backend|frontend|database|fullstack) only.
+`commons/project-structure-general.md` is a standing premise for every demand that creates or moves files: kind folders, one item per file, `<name>.<kind>.<ext>`, unit tests in `__tests__/` (details in `backend/structure-guide-backend.md` and `frontend/structure-guide-frontend.md`).
 
 ## Naming
 Deliverables in `delivery/`: `01-functional-stories.md`, `02-tech-spec.md`, `03-implementation-plan.md`, `04-verification-report.md`. After `done`, move `artifacts/active/<story>/` to `artifacts/archive/<story>/`.

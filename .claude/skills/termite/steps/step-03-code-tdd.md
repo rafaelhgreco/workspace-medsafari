@@ -8,6 +8,7 @@ Goal: implement each plan task, one commit per task. Resume rule: start at the f
    - YOU write the tests and the code with Read/Edit/Write; file-operator only runs commands.
    - Backend unit tests: `cargo nextest` + `mockall` mocks of ports (traits). Frontend: Vitest.
    - Respect the hexagonal dependency rule; adapters implement ports, domain has no I/O.
+   - RED starts by creating the test file under `__tests__/` (Rust: `__tests__/<name>.<kind>.test.rs`, wired from the source file with `#[cfg(test)] #[path = "__tests__/<name>.<kind>.test.rs"] mod tests;`; Angular: `__tests__/<name>.<kind>.spec.ts`), per `knowledge/guides/commons/project-structure-general.md`.
 3. If `test_scope = unit+integration`: the cycle also covers an integration test of the adapter in `crates/adapters-postgres/tests/`, with testcontainers-rs and a real Postgres; apply migrations in the container with `sqlx::migrate!`. Confirm `docker info` still works.
 4. Run the tests for the task (file-operator, raw output) until green.
 5. Regression at the end of the task (file-operator, raw output):
@@ -19,6 +20,7 @@ Goal: implement each plan task, one commit per task. Resume rule: start at the f
 ## Rules
 - Red regression: fix before the next task; never commit a red state.
 - Never skip a RED step; a test that passes before the code exists is wrong.
+- An inline test (`mod tests { ... }` with a body, or a spec next to its source) in a file the task creates or changes is an error; fix it before the commit.
 - Do not touch files outside the task's scope.
 - If a task needs a decision the spec does not cover, stop and ask the human; do not invent.
 
