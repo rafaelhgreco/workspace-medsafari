@@ -6,6 +6,10 @@ Goal: prove the work with real output, write the report, and get human approval.
 - Backend: `cargo fmt --check`, `cargo clippy --workspace -- -D warnings`, `[tests.backend].unit` (full). If any plan task has `test_scope = unit+integration`, also `[tests.backend].integration` (full, needs Docker); otherwise record integration as "not applicable".
 - Frontend: `npm run lint`, `[tests.frontend].unit`, `[tests.frontend].component`.
 - Hooks: `lefthook run pre-commit` in each repo.
+- Structure checks (`knowledge/guides/commons/project-structure-general.md`); any non-empty output fails VERIFY:
+  - Backend, from `backend/`: `for f in $(find crates -path '*/src/*/__tests__/*.test.rs'); do dir=$(dirname "$(dirname "$f")"); base=$(basename "$f" .test.rs); grep -q "__tests__/$base.test.rs" "$dir/$base.rs" || echo "ORPHAN: $f"; done`
+  - Frontend, from `frontend/`: `find src -name '*.spec.ts' -not -path '*/__tests__/*'`
+  - In any file the demand created or altered (list with `git diff --name-only <default>..HEAD`): a `ports.rs`, or a `mod tests {` with a body, also fails VERIFY.
 
 ## 2. Report: `delivery/04-verification-report.md`
 Sections (headings in English, body in `output_language`):

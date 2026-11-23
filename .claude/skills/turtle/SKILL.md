@@ -16,13 +16,14 @@ Turn approved functional stories into a tech spec for a hexagonal Rust/Axum + An
 - Never create a branch before the human approves the spec.
 
 ## Activation
-1. Read `customize.toml` in this folder. Argument: `<slug>`.
-2. Read `artifacts/active/<slug>/demand-context.json` and follow the gate table.
+1. Read `customize.toml` in this folder. Argument: `<ref>`.
+2. Read `artifacts/active/<demand>/demand-context.json` and follow the gate table. If `dependsOn[]` is set, each listed part must be `done` or `archived`; otherwise refuse and name the blocking part.
+**Demand reference.** The argument is `<ref>`: `<slug>` (single demand) or `<slug>/<part>` (one part of a split story, e.g. `login-register/backend`). `<demand>` below means `<ref>` as a path under `artifacts/active/`. See `docs/decisions/split-stories.md`. Branch slug: `<slug>` for single demands, `<slug>-<part>` for a part.
 
 | Status | Action |
 |---|---|
 | `tiger_review` with approval `tiger_review` | step-01 |
-| `tiger_review` without that approval | refuse; ask the human to approve Tiger's output via `/tiger <slug>` |
+| `tiger_review` without that approval | refuse; ask the human to approve Tiger's output via `/tiger <ref>` |
 | `turtle_in_progress` | resume: step-02 if `delivery/02-tech-spec.md` is missing; step-03 if it lacks `## Sequence diagrams`; else step-04 |
 | `turtle_review` | step-04 (decision); on approval continue to step-05 |
 | anything else | refuse; earlier -> `/tiger`, `termite_*` -> `/termite` |
@@ -52,4 +53,4 @@ Guides load lazily and only in a step that names them: `knowledge/guides/commons
 `delivery/02-tech-spec.md`; branches in `branches[]`; status `termite_plan`.
 
 ## Handoff
-Tell the human to run `/termite <slug>`.
+Tell the human to run `/termite <ref>`.

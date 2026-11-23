@@ -7,9 +7,10 @@ Goal: understand the demand, close real gaps, then create the demand folder and 
 - If the demand is empty or unreadable, ask for it and stop.
 
 ## 2. Slug and id
-- slug: kebab-case from the title, `[a-z0-9-]+`, at most 40 chars.
+- slug: kebab-case from the title (for a part of a split story, the slug is the workspace slug and the demand lives in `artifacts/active/<slug>/<part>/`), `[a-z0-9-]+`, at most 40 chars.
 - id: the ticket id if the human gave one, otherwise `DEM-<YYYYMMDD>-<slug>`.
-- Collision: if `artifacts/active/<slug>` or `artifacts/archive/<slug>` exists, ask: resume it or use another slug.
+- Collision: if `artifacts/active/<demand>` already has a `demand-context.json` or `artifacts/archive/<demand>` exists, ask: resume it or use another slug. A workspace folder without `demand-context.json` (only collected inputs and `00-split.md`) is not a collision.
+- Split: if `artifacts/active/<slug>/00-split.md` exists, read it. The part scope in it bounds this demand. Set `part`, `dependsOn` and the matching `demandType`. If a `dependsOn` part is not `done`/`archived` (read its `demand-context.json` in `active/` or `archive/`), STOP and tell the human which part blocks. Otherwise, if the demand is `fullstack` with independent backend and frontend deliveries, recommend splitting (default: split) per `docs/decisions/split-stories.md`.
 
 ## 3. Gap analysis (reasoning, do not skip)
 Check what the demand does NOT say about:
@@ -37,9 +38,9 @@ Check what the demand does NOT say about:
 | `fullstack` | more than one of the above |
 
 ## 6. Create the demand (delegate to file-operator)
-1. `mkdir -p artifacts/active/<slug>/delivery artifacts/active/<slug>/design`.
-2. Write `artifacts/active/<slug>/demand-context.json`:
-   - `id`, `slug`, `title`, `createdAt` (now), `demandType`;
+1. `mkdir -p artifacts/active/<demand>/delivery artifacts/active/<demand>/design`.
+2. Write `artifacts/active/<demand>/demand-context.json`:
+   - `id`, `slug`, `title`, `createdAt` (now), `demandType`; for a part also `part` and `dependsOn[]` (parts that must be `done` first, empty for the first part);
    - `targetRepositories[]`: `{name, path: "repos/<name>", graphifyPath: "knowledge/repositories/<name>/graphify-out"}`;
    - `branches: []`, `approvals: []`, `verifyRetries: 0`;
    - `graphify: {requestedAt: null, repos: [], confirmedBy: null, confirmedAt: null}`;

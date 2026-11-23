@@ -15,10 +15,11 @@ Goal: find what the stories change, and write spec sections 1-3 in `delivery/02-
 For every affected element, one row: layer, repo, module/file, change, refs (ST/AC/BR), `persistence` (yes if it touches `crates/adapters-postgres/` or `migrations/`).
 Layers: domain, application (ports), adapters-postgres, adapters-http (including utoipa OpenAPI contract), bootstrap, migrations (sqlx), Angular feature (`features/<feature>/{pages,components,services,models}`).
 - Check the dependency rule domain <- application <- adapters <- bootstrap; reject any design that violates it.
+- Write every `module/file` path in the layout of `knowledge/guides/commons/project-structure-general.md`: `<kind-folder>/<name>.<kind>.<ext>`, one item per file, with the unit test file under `__tests__/` next to it (list both paths). Never plan a catch-all file such as `ports.rs`.
 
 ## 4. Write the spec (file-operator or direct)
-Create `artifacts/active/<slug>/delivery/02-tech-spec.md`:
-1. `# <title> - Tech spec` and a status line (demand id, date, `Proposed branch: <type>/<slug>`; type chosen by the nature of the change).
+Create `artifacts/active/<demand>/delivery/02-tech-spec.md`:
+1. `# <title> - Tech spec` and a status line (demand id, date, `Proposed branch: <type>/<branch-slug>`; type chosen by the nature of the change).
 2. `## Context` - summary of the stories and key BRs.
 3. `## Sources` - graphify paths consulted and repo files read.
 4. `## Impact by layer` - the table from section 3 above.

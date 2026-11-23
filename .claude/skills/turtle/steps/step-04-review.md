@@ -9,7 +9,7 @@ If the status is `turtle_in_progress`: set `turtle_in_progress -> turtle_review`
 Show a short summary (no full spec):
 - file path; counts of work items, diagrams, risks;
 - the inferences with `needs human confirmation = yes`, each with its id and statement;
-- the proposed branch name `<type>/<slug>` and the repositories that will receive it;
+- the proposed branch name `<type>/<branch-slug>` and the repositories that will receive it;
 - whether any item has `persistence = yes` (Termite will then need Docker).
 
 ## 3. Decision

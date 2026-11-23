@@ -25,5 +25,5 @@ Read `knowledge/templates/template-composition.md` and the whole current file.
 ## 5. Request review (human gate)
 Show a short summary: counts of BR, EP, ST, FT, AC, UC, the open questions, and the file path. Ask: approve or request changes.
 - Changes: edit the affected section, redo step-05 validation, ask again; keep the status `tiger_review`.
-- Explicit approval: append `{stage:"tiger_review", approver, date}` to `approvals[]`, validate, then tell the human to run `/turtle <slug>`.
+- Explicit approval: append `{stage:"tiger_review", approver, date}` to `approvals[]`, validate, then tell the human to run `/turtle <ref>`.
 - Never record an approval the human did not give.

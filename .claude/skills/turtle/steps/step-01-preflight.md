@@ -17,7 +17,7 @@ Set `tiger_review -> turtle_in_progress` (history entry, `by: "turtle"`), then r
 
 ## 4. Graphify-out
 For each `targetRepositories[]` entry check that `graphifyPath` exists and is not empty (`ls <graphifyPath>`).
-- Missing or empty: STOP. List the missing paths and ask the human to run graphify manually on those repositories and place the output at `knowledge/repositories/<name>/graphify-out/`. Leave the status `turtle_in_progress`; the human re-runs `/turtle <slug>`.
+- Missing or empty: STOP. List the missing paths and ask the human to run graphify manually on those repositories and place the output at `knowledge/repositories/<name>/graphify-out/`. Leave the status `turtle_in_progress`; the human re-runs `/turtle <ref>`.
 - Present: note the report/index files found; do not load the full graph yet.
 
 ## 5. Repositories

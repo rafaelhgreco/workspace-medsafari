@@ -20,6 +20,12 @@ Status: the team documents expected in `knowledge/_sources/{commons,backend,data
 | 8 | Test and migration naming | commons/testing, database/development | `ac_<nn>_br_<nn>_<behavior>`; `<verb>_<object>` migrations |
 | 9 | Angular version and its built-in test builder vs a custom Vitest config | frontend/testing | Adapt to the project; scripts names are decided |
 | 10 | Code samples were not compiled | all | Review in a real repo |
+| 11 | Where `__tests__/` sits: one per kind folder (chosen) vs one tree mirrored at the crate/app root | commons/project-structure, backend/structure, frontend/structure | One `__tests__/` inside each folder that holds code |
+| 12 | Dot-separated Rust file names need one `#[path]` line per module in `mod.rs`; the alternative is `<name>_<kind>.rs` with no attribute | backend/structure | Keep the decided `<name>.<kind>.rs` and the `#[path]` lines |
+| 13 | Kinds beyond the four decided (`.port`, `.value_object`, `.error`, `.dto`, Angular kinds) and the crate-level exceptions (`lib.rs`, `main.rs`, `router.rs`, `openapi.rs`, `config.rs`, `error.rs`) | commons/project-structure, backend/structure, frontend/structure | As listed in the guides |
+| 14 | Legacy migration policy: a task moves only the items it touches; a bulk move is its own `refactor` demand | commons/project-structure | As written |
+| 15 | `cargo nextest list --profile unit` after the move (filters use package and kind, not module paths, so no change expected) | backend/structure, backend/testing-unit | Confirm on the first migrated crate |
+| 16 | The graphify snapshot (commit `7f1a5fea`, 2026-11-18) differs from the guides: frontend lint is Biome (not ESLint) and `package.json` has no `test:unit`/`test:component` scripts; the snapshot also has no `ports.rs` | frontend/development, frontend/testing-unit | Confirm against `~/Documentos/medsafari` and update the guides in a separate change |
 
 ## Pending reconciliation
 When the team documents are added under `knowledge/_sources/`, rerun the guides pass: reconcile each `[PROPOSED]` item below, cite `Source: _sources/...`, and record any conflict with a Phase 2 decision under "Open conflicts" without choosing alone.
@@ -29,12 +35,12 @@ When the team documents are added under `knowledge/_sources/`, rerun the guides 
 ### backend/code-patterns-backend.md
 
 - L15: - Define ports as traits in `application`; annotate them with `mockall::automock` for tests. [PROPOSED]
-- L16: - Inject dependencies as `Arc<dyn Port>` (use `async_trait` for async ports). [PROPOSED]
-- L17: - Do not use `unwrap`/`expect` outside tests and `bootstrap`. [PROPOSED]
-- L52: `cfg_attr(test, automock)` only mocks inside the same crate; to mock a port from another crate's tests expose it behind a `mocks` feature. [PROPOSED]
-- L82: Do not return internal error text for 5xx; log it and return a generic `detail`. [PROPOSED]
-- L96: Collect paths in a `#[derive(OpenApi)]` struct and expose the JSON (for example `GET /api-docs/openapi.json`); the Angular client is generated from it. [PROPOSED] for the exact route.
-- L107: [PROPOSED]
+- L17: - Inject dependencies as `Arc<dyn Port>` (use `async_trait` for async ports). [PROPOSED]
+- L18: - Do not use `unwrap`/`expect` outside tests and `bootstrap`. [PROPOSED]
+- L53: `cfg_attr(test, automock)` only mocks inside the same crate; to mock a port from another crate's tests expose it behind a `mocks` feature. [PROPOSED]
+- L83: Do not return internal error text for 5xx; log it and return a generic `detail`. [PROPOSED]
+- L98: Collect paths in a `#[derive(OpenApi)]` struct and expose the JSON (for example `GET /api-docs/openapi.json`); the Angular client is generated from it. [PROPOSED] for the exact route.
+- L109: [PROPOSED]
 
 ### backend/development-guide-backend.md
 
@@ -58,37 +64,54 @@ When the team documents are added under `knowledge/_sources/`, rerun the guides 
 - L32: [PROPOSED] (versions and exact layer constructors follow the `tower-http` version in the workspace).
 - L50: [PROPOSED]
 
+### backend/structure-guide-backend.md
+
+- L22: | `domain` | `value_objects/` | `.value_object.rs` [PROPOSED] | value objects |
+- L23: | `domain` | `errors/` | `.error.rs` [PROPOSED] | `DomainError` and variants |
+- L25: | `application` | `ports/` | `.port.rs` [PROPOSED] | other ports: `Clock`, id generator, notifier |
+- L28: | `adapters-http` | `dtos/` | `.dto.rs` [PROPOSED] | request/response DTOs with `ToSchema` |
+- L32: Crate-level singletons stay as plain files at `src/`: `lib.rs`, `main.rs`, `router.rs`, `openapi.rs`, `config.rs`, and the HTTP `ApiError` mapping (`error.rs`). [PROPOSED]
+- L126: Source: layout and `__tests__` decision from the project owner (2026-11-19); the `#[path]` mechanics, `mockall` with the `mocks` feature, `cargo fmt --check` over test files and `cargo clippy --all-targets -- -D warnings` were verified on a proof workspace (cargo 1.97). `cargo nextest` was not run there; module-path filtering is [PROPOSED] until confirmed with `cargo nextest list --profile unit`. Items marked [PROPOSED] extend the decision.
+
 ### backend/testing-guide-unit-backend.md
 
-- L9: - Keep unit tests in `#[cfg(test)] mod tests` next to the code. [PROPOSED]
 - L10: - Name tests `ac_<nn>_br_<nn>_<behavior>` so they trace to the story. [PROPOSED]
 - L11: - Use builders/factories for test data; keep each test readable in one screen. [PROPOSED]
 - L12: - Make the clock and id generation ports so tests are deterministic. [PROPOSED]
 - L15: - Use `#[tokio::test]` for async tests; avoid `sleep`. [PROPOSED]
 - L29: `unit` excludes the `adapters-postgres` integration test binaries (`crates/adapters-postgres/tests/`); `integration` runs only them. The exact `default-filter`/`kind(test)` filterset syntax depends on the nextest version: confirm with `cargo nextest list`. [PROPOSED]
-- L55: [PROPOSED]
+- L56: [PROPOSED]
 
 ### commons/code-patterns-general.md
 
-- L8: - Rust: `snake_case` functions/modules/files, `UpperCamelCase` types, `SCREAMING_SNAKE_CASE` constants. [PROPOSED]
-- L9: - TypeScript: `camelCase` members, `PascalCase` types/classes, `kebab-case` file names with Angular suffix (`.component.ts`, `.service.ts`). [PROPOSED]
-- L10: - SQL: `snake_case`, plural table names, foreign keys named `<singular>_id`. [PROPOSED]
-- L11: - Comment the why, never the what; do not put BR/ST/AC/Epic ids or task references in source comments. [PROPOSED]
-- L12: - Never swallow errors: propagate typed errors and map them at the edge. [PROPOSED]
-- L13: - Keep functions small and single-purpose; extract when a name explains better than a comment. [PROPOSED]
-- L14: - Do not hand-edit generated files (OpenAPI client, `.sqlx/` metadata). [PROPOSED]
-- L15: - Leave no dead code and no unexplained placeholder comments. [PROPOSED]
-- L38: [PROPOSED]
-- L45: [PROPOSED]
-- L61: None (no team documents available yet). Reconcile every `[PROPOSED]` item when team documents arrive; see `knowledge/guides/GAPS.md`.
+- L9: - Rust: `snake_case` functions/modules/files, `UpperCamelCase` types, `SCREAMING_SNAKE_CASE` constants. [PROPOSED]
+- L10: - TypeScript: `camelCase` members, `PascalCase` types/classes, `kebab-case` file names with Angular suffix (`.component.ts`, `.service.ts`). [PROPOSED]
+- L11: - SQL: `snake_case`, plural table names, foreign keys named `<singular>_id`. [PROPOSED]
+- L12: - Comment the why, never the what; do not put BR/ST/AC/Epic ids or task references in source comments. [PROPOSED]
+- L13: - Never swallow errors: propagate typed errors and map them at the edge. [PROPOSED]
+- L14: - Keep functions small and single-purpose; extract when a name explains better than a comment. [PROPOSED]
+- L15: - Do not hand-edit generated files (OpenAPI client, `.sqlx/` metadata). [PROPOSED]
+- L16: - Leave no dead code and no unexplained placeholder comments. [PROPOSED]
+- L40: [PROPOSED]
+- L47: [PROPOSED]
+- L63: None (no team documents available yet). Reconcile every `[PROPOSED]` item when team documents arrive; see `knowledge/guides/GAPS.md`.
+
+### commons/project-structure-general.md
+
+- L24: | Other port (clock, id generator, notifier) | `.port` [PROPOSED] | `application` / - |
+- L25: | Value object | `.value_object` [PROPOSED] | `domain` / - |
+- L26: | HTTP DTO | `.dto` [PROPOSED] | `adapters-http` / - |
+- L50: - A task that changes an item still living in a legacy file (`ports.rs`, an inline `mod tests`) moves that item, and its tests, to the new layout in the same task. [PROPOSED]
+- L51: - Migrating the rest of a legacy file is its own `refactor` demand; do not mix a bulk move with feature work. [PROPOSED]
+- L61: Source: layout and `__tests__` decision from the project owner (2026-11-19); the Rust mechanics were checked by compiling a proof workspace (cargo 1.97: `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test`). Items marked [PROPOSED] extend that decision and need confirmation; see `knowledge/guides/GAPS.md`.
 
 ### commons/testing-guide-unit-general.md
 
 - L7: - Rust test names: `ac_<nn>_br_<nn>_<behavior>` (for example `ac_02_br_01_rejects_late_cancellation`). [PROPOSED]
 - L8: - TypeScript test names: `it('AC-02 [BR-01] rejects late cancellation')`. [PROPOSED]
-- L15: - Keep tests deterministic: fixed clock, fixed ids, no sleeps, no order dependence. [PROPOSED]
-- L16: - Do not assert on implementation details (private calls, log text) unless that is the behavior. [PROPOSED]
-- L32: - A test may cover several ids; list them all in the name or in a single trailing id list. [PROPOSED]
+- L16: - Keep tests deterministic: fixed clock, fixed ids, no sleeps, no order dependence. [PROPOSED]
+- L17: - Do not assert on implementation details (private calls, log text) unless that is the behavior. [PROPOSED]
+- L33: - A test may cover several ids; list them all in the name or in a single trailing id list. [PROPOSED]
 
 ### database/code-patterns-database.md
 
@@ -131,8 +154,8 @@ When the team documents are added under `knowledge/_sources/`, rerun the guides 
 - L14: - Handle API errors as RFC 7807 problem+json mapped to a typed `ProblemDetails` in `core/`. [PROPOSED]
 - L15: - Use typed reactive forms and keep validation messages in `output_language`. [PROPOSED]
 - L16: - Use the new control flow (`@if`, `@for`) and `track` in loops. [PROPOSED]
-- L51: [PROPOSED]
-- L64: [PROPOSED]
+- L53: [PROPOSED]
+- L66: [PROPOSED]
 
 ### frontend/development-guide-frontend.md
 
@@ -144,15 +167,23 @@ When the team documents are added under `knowledge/_sources/`, rerun the guides 
 - L25: Source: docs/decisions/phase-2-decisions.md (`test:unit`, `test:component`, ESLint + Prettier, lefthook); `api:generate` is [PROPOSED].
 - L36: [PROPOSED] for the exact set of commands.
 
+### frontend/structure-guide-frontend.md
+
+- L8: - Kinds and suffixes: `.component`, `.service`, `.model`, `.guard`, `.interceptor`, `.pipe`, `.directive`, `.routes`. [PROPOSED] for the ones beyond `.component`, `.service`, `.model`.
+- L13: - Test helpers (fakes, builders) used by one folder live in that folder's `__tests__/`; helpers shared across features go to `shared/testing/`. [PROPOSED]
+- L14: - `app.ts`, `app.config.ts` and `main.ts` generated by the CLI keep their names; `app.spec.ts` moves to `src/app/__tests__/app.spec.ts`. [PROPOSED]
+- L68: - The test run must pick up nested `__tests__/**/*.spec.ts`; the builder default (`**/*.spec.ts`) already matches them and `tsconfig.app.json` must keep excluding `src/**/*.spec.ts` so specs stay out of the app build. [PROPOSED] Confirm with one failing spec in a `__tests__/` folder (RED) before moving the others.
+- L78: Source: layout and `__tests__` decision from the project owner (2026-11-19); Angular suffixes follow `commons/code-patterns-general.md`. The tooling check was not executed (no frontend checkout in the session); items marked [PROPOSED] extend the decision.
+
 ### frontend/testing-guide-unit-frontend.md
 
 - L7: - Split by file name: `*.spec.ts` for unit, `*.component.spec.ts` for component tests. [PROPOSED]
-- L9: - Cite the rule in the test name: `it('AC-02 [BR-01] ...')`. [PROPOSED]
-- L12: - Drive signals through the public API; use `TestBed.flushEffects()` / `fixture.detectChanges()` to settle. [PROPOSED]
-- L13: - Use a fixed clock and fixed data; no real timers. [PROPOSED]
-- L32: [PROPOSED]: the Angular version and its test builder may already provide Vitest; adapt the config to the project instead of duplicating it. The script names are decided.
-- L46: If the service uses `inject()`, create it inside `TestBed.runInInjectionContext` with a provided fake. [PROPOSED]
-- L60: [PROPOSED]
+- L10: - Cite the rule in the test name: `it('AC-02 [BR-01] ...')`. [PROPOSED]
+- L13: - Drive signals through the public API; use `TestBed.flushEffects()` / `fixture.detectChanges()` to settle. [PROPOSED]
+- L14: - Use a fixed clock and fixed data; no real timers. [PROPOSED]
+- L33: [PROPOSED]: the Angular version and its test builder may already provide Vitest; adapt the config to the project instead of duplicating it. The script names are decided.
+- L50: If the service uses `inject()`, create it inside `TestBed.runInInjectionContext` with a provided fake. [PROPOSED]
+- L67: [PROPOSED]
 
 ## Totals
 
@@ -161,13 +192,16 @@ When the team documents are added under `knowledge/_sources/`, rerun the guides 
 | backend/code-patterns-backend.md | 7 |
 | backend/development-guide-backend.md | 4 |
 | backend/middlewares-guide-backend.md | 12 |
-| backend/testing-guide-unit-backend.md | 7 |
+| backend/structure-guide-backend.md | 6 |
+| backend/testing-guide-unit-backend.md | 6 |
 | commons/code-patterns-general.md | 11 |
+| commons/project-structure-general.md | 6 |
 | commons/testing-guide-unit-general.md | 5 |
 | database/code-patterns-database.md | 11 |
 | database/development-guide-database.md | 8 |
 | database/testing-testcontainers-guide-database.md | 5 |
 | frontend/code-patterns-frontend.md | 8 |
 | frontend/development-guide-frontend.md | 7 |
+| frontend/structure-guide-frontend.md | 5 |
 | frontend/testing-guide-unit-frontend.md | 7 |
-| **Total** | 92 |
+| **Total** | 108 |

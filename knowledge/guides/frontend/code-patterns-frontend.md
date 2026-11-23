@@ -15,6 +15,7 @@
 - Use typed reactive forms and keep validation messages in `output_language`. [PROPOSED]
 - Use the new control flow (`@if`, `@for`) and `track` in loops. [PROPOSED]
 - Lint with Angular ESLint and format with Prettier; both must pass.
+- Name files `<name>.<kind>.ts` (kebab-case) and keep specs in a `__tests__/` subfolder of the folder that holds the code; see `structure-guide-frontend.md`.
 
 ## Folder layout
 ```text
@@ -27,6 +28,7 @@ src/app/
     services/      # signal-based services
     models/        # feature types not provided by the API
 ```
+Every kind folder also has a `__tests__/` subfolder for its specs.
 Source: docs/decisions/phase-2-decisions.md.
 
 ## Signal-based service

@@ -13,6 +13,7 @@
 - Generate the OpenAPI document with `utoipa`; annotate handlers with `#[utoipa::path]` and DTOs with `ToSchema`.
 - HTTP DTOs live in `adapters-http`; never expose domain types directly in the API.
 - Define ports as traits in `application`; annotate them with `mockall::automock` for tests. [PROPOSED]
+- Place every item by kind in its own file named `<name>.<kind>.rs` (`repositories/login_request.repository.rs`, `usecases/get_login_request.usecase.rs`, `controllers/...`, `entities/...`); never a catch-all `ports.rs`. Unit tests go in `__tests__/`. See `structure-guide-backend.md`.
 - Inject dependencies as `Arc<dyn Port>` (use `async_trait` for async ports). [PROPOSED]
 - Do not use `unwrap`/`expect` outside tests and `bootstrap`. [PROPOSED]
 
@@ -30,7 +31,7 @@ Source: docs/decisions/phase-2-decisions.md.
 
 ## Ports and use cases
 ```rust
-// crates/application/src/appointments/ports.rs
+// crates/application/src/repositories/appointment.repository.rs
 #[cfg_attr(test, mockall::automock)]
 #[async_trait::async_trait]
 pub trait AppointmentRepository: Send + Sync {
@@ -38,7 +39,7 @@ pub trait AppointmentRepository: Send + Sync {
     async fn save(&self, appointment: &Appointment) -> Result<(), RepositoryError>;
 }
 
-// crates/application/src/appointments/cancel.rs
+// crates/application/src/usecases/cancel_appointment.usecase.rs
 pub struct CancelAppointment { repo: Arc<dyn AppointmentRepository>, clock: Arc<dyn Clock> }
 impl CancelAppointment {
     pub async fn execute(&self, id: AppointmentId) -> Result<(), CancelError> {
@@ -84,6 +85,7 @@ Source: docs/decisions/phase-2-decisions.md (thiserror per layer, RFC 7807).
 
 ## Thin handler and OpenAPI
 ```rust
+// crates/adapters-http/src/controllers/appointment.controller.rs
 #[utoipa::path(post, path = "/appointments/{id}/cancel",
     params(("id" = Uuid, Path)),
     responses((status = 204), (status = 404, body = Problem, content_type = "application/problem+json"),

@@ -5,6 +5,7 @@
 - `npm run test:unit` runs services, stores and pure logic; no `TestBed` unless a service needs it.
 - `npm run test:component` runs component tests with `TestBed` and the DOM.
 - Split by file name: `*.spec.ts` for unit, `*.component.spec.ts` for component tests. [PROPOSED]
+- Put specs in a `__tests__/` subfolder next to the code (`services/__tests__/appointments.service.spec.ts`); see `structure-guide-frontend.md`.
 - Fake the generated API client in tests; never call a real backend.
 - Cite the rule in the test name: `it('AC-02 [BR-01] ...')`. [PROPOSED]
 - Every AC and BR that has frontend behavior needs at least one traceable test.
@@ -34,6 +35,9 @@ Source: docs/decisions/phase-2-decisions.md (Vitest, `test:unit`, `test:componen
 
 ## Service test with a faked client
 ```ts
+// services/__tests__/appointments.service.spec.ts
+import { AppointmentsService } from '../appointments.service';
+
 describe('AppointmentsService', () => {
   it('AC-04 [BR-03] exposes loaded appointments', async () => {
     const api = { listAppointments: () => of([{ id: '1', status: 'scheduled' }]) };
@@ -47,6 +51,9 @@ If the service uses `inject()`, create it inside `TestBed.runInInjectionContext`
 
 ## Component test
 ```ts
+// components/__tests__/cancel-button.component.spec.ts
+import { CancelButtonComponent } from '../cancel-button.component';
+
 describe('CancelButtonComponent', () => {
   it('AC-01 [BR-01] emits cancel when confirmed', () => {
     const fixture = TestBed.createComponent(CancelButtonComponent);

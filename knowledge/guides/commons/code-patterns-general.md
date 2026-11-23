@@ -5,6 +5,7 @@
 - Name branches `<type>/<slug>` with slug `[a-z0-9-]+`; Turtle creates them, never create branches by hand during a task.
 - Make one commit per task; never commit a red test suite.
 - Respect the dependency direction domain <- application <- adapters <- bootstrap; never import against it.
+- Organize files by kind, one item per file, named `<name>.<kind>.<ext>`, with unit tests in `__tests__/`; see `project-structure-general.md`.
 - Rust: `snake_case` functions/modules/files, `UpperCamelCase` types, `SCREAMING_SNAKE_CASE` constants. [PROPOSED]
 - TypeScript: `camelCase` members, `PascalCase` types/classes, `kebab-case` file names with Angular suffix (`.component.ts`, `.service.ts`). [PROPOSED]
 - SQL: `snake_case`, plural table names, foreign keys named `<singular>_id`. [PROPOSED]
@@ -28,7 +29,8 @@ Source: docs/decisions/phase-2-decisions.md (Conventional Commits, `<type>/<slug
 | Thing | Convention | Example |
 |---|---|---|
 | Rust crate (workspace) | kebab-case | `adapters-postgres` |
-| Rust module/file | snake_case | `cancel_appointment.rs` |
+| Rust file | snake_case + kind suffix | `cancel_appointment.usecase.rs` |
+| Rust module | snake_case, `<name>_<kind>` | `cancel_appointment_usecase` |
 | Rust type / trait | UpperCamelCase | `AppointmentRepository` |
 | Port trait | named for the capability | `Clock`, `AppointmentRepository` |
 | TS file | kebab-case + suffix | `appointments.service.ts` |

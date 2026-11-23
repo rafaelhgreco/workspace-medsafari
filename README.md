@@ -5,6 +5,7 @@ Fluxo: **Tiger** (histórias funcionais) -> revisão humana -> **Turtle** (tech 
 ## Como iniciar uma demanda
 1. Copie `artifacts/active/_example-story/` para `artifacts/active/<slug>/` e ajuste `demand-context.json` (valide contra `schemas/demand-context.schema.json`).
 2. Invoque o agente Tiger com `/tiger` (depois `/turtle` e `/termite`).
+Para histórias grandes (ex.: backend e depois frontend), use o split: `artifacts/active/<slug>/00-split.md` e uma pasta por parte, invocada como `/tiger <slug>/<parte>`. Veja `docs/decisions/split-stories.md`.
 3. Após cada etapa, revise e registre a aprovação em `approvals[]`.
 
 ## Como adicionar um repositório

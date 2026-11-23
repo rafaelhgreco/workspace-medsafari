@@ -6,7 +6,7 @@
 - Test domain rules with plain values and a fake clock; no mocks needed.
 - Test use cases in `application` with mocked ports; assert on results and on port calls that matter.
 - Test handlers in `adapters-http` with a fake use case through the router (`tower::ServiceExt::oneshot`): status, headers, problem+json body.
-- Keep unit tests in `#[cfg(test)] mod tests` next to the code. [PROPOSED]
+- Keep unit tests out of the source file: put them in `__tests__/<name>.<kind>.test.rs` next to the code, wired with `#[cfg(test)] #[path = "__tests__/..."] mod tests;` (see `structure-guide-backend.md`).
 - Name tests `ac_<nn>_br_<nn>_<behavior>` so they trace to the story. [PROPOSED]
 - Use builders/factories for test data; keep each test readable in one screen. [PROPOSED]
 - Make the clock and id generation ports so tests are deterministic. [PROPOSED]
@@ -31,6 +31,7 @@ Source: docs/decisions/phase-2-decisions.md (profiles `unit` and `integration`).
 
 ## mockall on a port
 ```rust
+// crates/application/src/usecases/__tests__/cancel_appointment.usecase.test.rs
 #[tokio::test]
 async fn ac_02_br_01_refuses_cancellation_inside_the_window() {
     // Arrange
