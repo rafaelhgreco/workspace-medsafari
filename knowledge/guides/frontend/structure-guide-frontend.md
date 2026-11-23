@@ -3,7 +3,7 @@
 Applies the premise in `commons/project-structure-general.md` to the Angular app.
 
 ## Quick rules
-- Keep the feature-based folders (`core/`, `shared/`, `features/<feature>/{pages,components,services,models}`); each kind has its own folder and one item per file.
+- Keep the feature-based folders (`core/`, `shared/`, `features/<feature>/{pages,components,services,models}`); each kind has its own folder and one item per file. `features/<feature>/` plays the role of the backend module, so there is no extra `modules/` folder; name the feature after the backend module it consumes (`login_request` -> `features/login-request/`).
 - File name: `<name>.<kind>.ts` in `kebab-case`: `login-request.service.ts`, `login-form.component.ts`, `login-request.model.ts`.
 - Kinds and suffixes: `.component`, `.service`, `.model`, `.guard`, `.interceptor`, `.pipe`, `.directive`, `.routes`. [PROPOSED] for the ones beyond `.component`, `.service`, `.model`.
 - A component's template and styles keep its base name (`login-form.component.html`, `login-form.component.css`) and stay next to it.
