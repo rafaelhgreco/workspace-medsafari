@@ -8,6 +8,7 @@ Goal: prove the work with real output, write the report, and get human approval.
 - Hooks: `lefthook run pre-commit` in each repo.
 - Structure checks (`knowledge/guides/commons/project-structure-general.md`); any non-empty output fails VERIFY:
   - Backend, from `backend/`: `for f in $(find crates -path '*/src/*/__tests__/*.test.rs'); do dir=$(dirname "$(dirname "$f")"); base=$(basename "$f" .test.rs); grep -q "__tests__/$base.test.rs" "$dir/$base.rs" || echo "ORPHAN: $f"; done`
+  - Backend modules, from `backend/`: run both checks of `knowledge/guides/backend/structure-guide-backend.md` ("Checks for VERIFY"). An orphan test, an undeclared module edge, a cycle, or a new file outside `modules/` and `shared/` (other than the root files listed in the guide) fails VERIFY.
   - Frontend, from `frontend/`: `find src -name '*.spec.ts' -not -path '*/__tests__/*'`
   - In any file the demand created or altered (list with `git diff --name-only <default>..HEAD`): a `ports.rs`, or a `mod tests {` with a body, also fails VERIFY.
 

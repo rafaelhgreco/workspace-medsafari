@@ -12,6 +12,7 @@ Invoke the `writing-plans` skill (it is vendored; never edit it). Apply these ov
 ## 2. Task format (each task)
 ```
 ### Task N: <title>
+- module: <module> | shared
 - layer: domain | application | adapters-postgres | adapters-http | bootstrap | frontend
 - repo: <name>
 - depends_on: [<task numbers>]
