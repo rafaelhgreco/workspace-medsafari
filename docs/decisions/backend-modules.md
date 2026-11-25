@@ -17,3 +17,20 @@ Decisão de 2026-11-23. O backend passa a ser organizado por **módulo** e, dent
 - [project-structure-general](../../knowledge/guides/commons/project-structure-general.md)
 - [structure-guide-backend](../../knowledge/guides/backend/structure-guide-backend.md)
 - [GAPS](../../knowledge/guides/GAPS.md)
+
+## Resultado
+
+Executado em 2026-11-23 na branch `refactor/backend-modules` de `repos/medsafari`, fora do fluxo Tiger/Turtle/Termite (refatoração independente, sem história funcional). Sem push.
+
+Commits: `514aea9` (`health`), `7504ddf` (`progress`), `688d833` (`auth` e `shared`, `DomainError` dividido), `1c5c7ee` (guarda em `architecture.rs`).
+
+Evidência: lista de testes unitários igual ao baseline (175) mais 5 testes novos da guarda; perfis `unit` (180) e `integration` (44) verdes; JSON do OpenAPI idêntico; sem testes órfãos; única aresta `progress -> auth`; `E0603` ao importar a pasta de tipo de outro módulo; `Cargo.toml`, migrations e `frontend/` sem alteração; asserts alterados só pela troca de `DomainError` por `HealthError`/`AuthError`.
+
+O que divergiu da proposta:
+- Dois testes que misturavam módulos mudaram de arquivo, sem mudar nome nem asserts: `ac_15_br_01_..._value_equality` foi para `progress` (domain) e `ac_21_br_11_system_clock_and_id_generator_...` foi para `auth` (bootstrap), para não criar `auth -> progress` nem `shared -> auth`.
+- `test_support.rs` (adapters-http) também ficou na raiz.
+- `From<...Error> for ApiError` continua em `adapters-http/src/error.rs` (GAPS #25).
+- Os `mod.rs` dos módulos reexportam todos os itens públicos; a poda não foi feita.
+- Os commits rodaram com o hook de pre-commit ativo, sem `LEFTHOOK=0`.
+- A guarda foi escrita depois da migração, sem passo RED.
+- Pendente: graphify do repo (rodado depois pelo responsável).

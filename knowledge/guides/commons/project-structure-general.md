@@ -24,10 +24,10 @@ Standing premise for every demand that creates or moves source files, in any rep
 | Use case | `.usecase` | `application` / - |
 | Controller (HTTP handler) | `.controller` | `adapters-http` / - |
 | Entity | `.entity` | `domain` / - |
-| Other port (clock, id generator, notifier) | `.port` [PROPOSED] | `application` / - |
+| Other port (clock, id generator, notifier) | `.port` | `application` / - |
 | Module wiring | `.module` | `bootstrap` / - |
-| Value object | `.value_object` [PROPOSED] | `domain` / - |
-| HTTP DTO | `.dto` [PROPOSED] | `adapters-http` / - |
+| Value object | `.value_object` | `domain` / - |
+| HTTP DTO | `.dto` | `adapters-http` / - |
 | Component, service, model, guard, interceptor, pipe | `.component`, `.service`, `.model`, `.guard`, `.interceptor`, `.pipe` | - / `features/<feature>/...`, `core/`, `shared/` |
 
 Rust file names use `snake_case` (`login_request.repository.rs`); TypeScript file names use `kebab-case` (`login-request.service.ts`). The dot-separated suffix is part of the file name, not of the Rust module name; see the backend guide for the `#[path]` mechanics.

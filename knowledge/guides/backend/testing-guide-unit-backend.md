@@ -22,12 +22,12 @@
 fail-fast = false
 
 [profile.unit]
-default-filter = "not (package(adapters-postgres) and kind(test))"
+default-filter = "not (package(adapters-postgres) | binary(auth_flow))"
 
 [profile.integration]
-default-filter = "package(adapters-postgres) and kind(test)"
+default-filter = "package(adapters-postgres) | binary(auth_flow)"
 ```
-`unit` excludes the `adapters-postgres` integration test binaries (`crates/adapters-postgres/tests/`); `integration` runs only them. The exact `default-filter`/`kind(test)` filterset syntax depends on the nextest version: confirm with `cargo nextest list`. [PROPOSED]
+`unit` excludes the `adapters-postgres` package and the `auth_flow` binary of `bootstrap` (both start a container); `integration` runs only them. Verified in `repos/medsafari/backend/.config/nextest.toml` with `cargo nextest list --profile unit` (175 tests before and after the module migration). The filters use package and binary names, so moving files into modules changes nothing.
 Source: docs/decisions/phase-2-decisions.md (profiles `unit` and `integration`).
 
 ## mockall on a port

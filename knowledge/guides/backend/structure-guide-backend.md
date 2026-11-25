@@ -8,7 +8,7 @@ Applies the premise in `commons/project-structure-general.md` to the Rust crates
 - A module's `mod.rs` is its public API: kind folders are private (`mod usecases;`) and only the items other code may use are re-exported with `pub use`. The compiler rejects any outside import of a kind folder (`E0603`).
 - Inside a kind folder, file modules are private too (`mod login_request_repository;`) and are re-exported by that folder's `mod.rs`.
 - Declare every file with `#[path = "<name>.<kind>.rs"]`, because a dot in a file name cannot be a module name. A missing declaration is a compile error.
-- `lib.rs` contains only `pub mod modules;` and `pub mod shared;` (when the crate has them). `modules/mod.rs` contains only `pub mod <module>;` lines.
+- `lib.rs` declares `modules` and `shared` (when the crate has them) and, besides that, only what is public from root files (for example `pub use settings::AuthSettings;`, the `bootstrap` entry points). No type is re-exported from a module at the crate root. `modules/mod.rs` contains only `pub mod <module>;` lines.
 - Never create `ports.rs`, `usecases.rs`, `repositories.rs`, `utils.rs` or any file that collects several items; never put use cases of different modules in one folder.
 - One item per file; a repository port and the error only it returns live in the same `.repository.rs` file. File name, type name and module name stay aligned: `login_request.repository.rs` holds `LoginRequestRepository`.
 - Tests of crate-level files (`config.rs`, `router.rs`, `settings.rs`, ...) live in `<crate>/src/__tests__/<name>.test.rs` and are wired the same way.
@@ -22,19 +22,19 @@ Applies the premise in `commons/project-structure-general.md` to the Rust crates
 | Crate | Folder (under `modules/<module>/`) | File suffix | Holds |
 |---|---|---|---|
 | `domain` | `entities/` | `.entity.rs` | entities and aggregates |
-| `domain` | `value_objects/` | `.value_object.rs` [PROPOSED] | value objects |
-| `domain` | `errors/` | `.error.rs` [PROPOSED] | the module's domain errors |
+| `domain` | `value_objects/` | `.value_object.rs` | value objects |
+| `domain` | `errors/` | `.error.rs` | the module's domain errors |
 | `application` | `repositories/` | `.repository.rs` | repository ports (traits) and their error |
-| `application` | `ports/` | `.port.rs` [PROPOSED] | other ports owned by the module |
+| `application` | `ports/` | `.port.rs` | other ports owned by the module |
 | `application` | `usecases/` | `.usecase.rs` | use cases and their error |
 | `adapters-http` | `controllers/` | `.controller.rs` | thin Axum handlers with `#[utoipa::path]` |
-| `adapters-http` | `dtos/` | `.dto.rs` | request/response DTOs with `ToSchema` [PROPOSED] |
+| `adapters-http` | `dtos/` | `.dto.rs` | request/response DTOs with `ToSchema` |
 | `adapters-postgres` | `repositories/` | `.repository.rs` | `sqlx` implementations of the module's ports |
 | `bootstrap` | (module root) | `<module>.module.rs` | wiring of the module: builds its use cases and router |
 
 Outside `modules/`:
 - `<crate>/src/shared/` holds cross-cutting items with the same kind folders (`application/src/shared/ports/clock.port.rs`); modules may depend on `shared`, `shared` depends on no module.
-- Crate-level singletons stay as plain files at `src/`: `lib.rs`, `main.rs`, `router.rs`, `openapi.rs`, `config.rs` and the HTTP `ApiError` mapping (`error.rs`); a module's `From<ModuleError> for ApiError` lives in its controller file. [PROPOSED]
+- Crate-level files stay as plain files at `src/` (full list in "Initial module cut"). In `adapters-http`, `error.rs` keeps the `From<...Error> for ApiError` conversions; moving each one into the module's controller file is still open. [PROPOSED]
 - Concrete port implementations that exist only in `bootstrap` live in the module as `providers/<name>.provider.rs`.
 
 ## Layout example
@@ -174,17 +174,31 @@ A non-empty result of check 1 is a verification failure. An undeclared edge or a
 4. Delete the legacy file or folder once empty; the unit profile must list the same tests as the baseline, only under new module paths.
 5. Commit as `refactor(<crate>): ...`; a move commit changes no behavior.
 
-Initial module cut for the current backend (after the login/register merge; graphify snapshot of 2026-11-19; accepted 2026-11-23). The file-by-file mapping lives in the demand `refactor-backend-modules`.
+Result of the migration (branch `refactor/backend-modules` in `repos/medsafari`, 2026-11-23; four commits: `health`, `progress`, `auth` + `shared`, architecture guard). Behavior unchanged: the unit name list equals the baseline plus 5 guard tests, `unit` and `integration` profiles green, OpenAPI JSON identical.
 | Module | Holds | Depends on |
 |---|---|---|
-| `health` | `AppVersion`, `VersionProvider`, `GetHealth`, health controller and DTO, `CargoVersion` | nothing |
-| `auth` | access request, verification, signup, terms, session, logout, user; routes `/api/auth/*` | nothing |
-| `progress` | attempts and progress sync; routes `/api/progress/*` | `auth` (through `SessionService`) |
-| `shared` (per crate) | `Clock`, `PortError`, `SystemClock` | nothing |
+| `health` | `AppVersion`, `HealthError`, `VersionProvider`, `GetHealth`, health controller and DTO, `CargoVersion` | nothing |
+| `auth` | access request, verification, signup, terms, session, logout, user, `require_session`, `AuthError`; routes `/api/auth/*` | nothing |
+| `progress` | attempts and progress sync; routes `/api/progress/*` | `auth` (`Principal`, `UserId`) |
+| `shared` (`application`, `bootstrap`) | `Clock`, `PortError`, `SystemClock` | nothing |
 
-Files that stay at the crate root: `settings.rs`, `config.rs`, `dotenv.rs`, `wiring.rs`, `router.rs`, `state.rs`, `openapi.rs`, `error.rs`, `json.rs`, `database.rs`, `pg_store.rs`, `client_ip.rs`, `cookie.rs`, `user_agent_label.rs`. Split `auth` only when a new flow justifies it: with today's dependencies a finer cut (`account`, `session`, `access`) produces cycles (`session -> access -> session`).
+Files that stay at the crate root:
+- `application`: `settings.rs`.
+- `adapters-http`: `client_ip.rs`, `cookie.rs`, `error.rs`, `json.rs`, `openapi.rs`, `router.rs`, `state.rs`, `test_support.rs`, `user_agent_label.rs`.
+- `adapters-postgres`: `database.rs`, `error.rs`, `pg_store.rs`.
+- `bootstrap`: `config.rs`, `dotenv.rs`, `wiring.rs`, `main.rs`, `bin/`.
+- Their tests stay in `src/__tests__/`. `domain` has no root files besides `lib.rs`.
 
-Source: layout, `__tests__` and `modules/` decisions from the project owner (2026-11-19 and 2026-11-23). The module mechanics (private kind folders and compiler-enforced boundaries, `#[path]` with dotted file names, `mockall` with the `mocks` feature across crates, `cargo fmt --check` over test files, `cargo clippy --all-targets -- -D warnings`, `cargo test`, both checks above) were verified on a proof workspace with `domain`, `application` and a stand-in adapter crate (cargo 1.97). `cargo nextest` and the `bootstrap` wiring were not exercised there. Items #17 to #22 of `knowledge/guides/GAPS.md` (modules in the adapters, `shared/`, cross-module rules, errors per module, per-module wiring) were accepted by the project owner on 2026-11-23. Items still marked [PROPOSED] extend the decision and need confirmation; see `GAPS.md`.
+Shape that worked:
+- Each `modules/<module>/mod.rs` re-exports every public item of its kind folders. `adapters-http` re-exports controllers and DTOs with `pub use <kind>::*`, because `utoipa` generates `__path_*` items. `adapters-postgres` exports nothing: the repositories are `impl <Port> for PgStore`.
+- `bootstrap`: `<module>.module.rs` exposes `build(...)` and a struct with the module's use cases; `wiring.rs` composes `auth`, `progress` and `health`. Each module builds its own providers.
+- `DomainError` became `HealthError` (domain/health) and `AuthError` (domain/auth).
+- A test that needs two modules lives in the module that is allowed to depend on the other. Examples: `ac_15_br_01_ids_are_distinct_types_with_value_equality` (uses `UserId`, `SessionId`, `AttemptId`) is in `progress`, and `ac_21_br_11_system_clock_and_id_generator_produce_fresh_values` is in `auth`, because `shared` and `auth` must not depend on `progress`.
+- `crates/bootstrap/tests/architecture.rs` runs the module checks: no kind folder or undeclared file at a crate root, only `progress -> auth` between modules, no cycle, `shared` depends on no module.
+
+Split `auth` only when a new flow justifies it: with today's dependencies a finer cut (`account`, `session`, `access`) produces cycles (`session -> access -> session`).
+
+Source: layout, `__tests__` and `modules/` decisions from the project owner (2026-11-19 and 2026-11-23). Mechanics verified on a proof workspace and then on the real backend: `cargo nextest` profiles `unit` (filters by package, no change needed) and `integration`, `cargo fmt --check`, `cargo clippy --workspace --all-targets -- -D warnings`, `E0603` on an import of another module's kind folder, both checks above, per-module wiring in `bootstrap`. Items #15 and #22 of `knowledge/guides/GAPS.md` are confirmed by this run. Items still marked [PROPOSED] extend the decision and need confirmation.
 
 ## Open conflicts
 None. See `knowledge/guides/GAPS.md`.
