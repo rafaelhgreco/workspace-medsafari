@@ -13,15 +13,15 @@
 - Generate the OpenAPI document with `utoipa`; annotate handlers with `#[utoipa::path]` and DTOs with `ToSchema`.
 - HTTP DTOs live in `adapters-http`; never expose domain types directly in the API.
 - Define ports as traits in `application`; annotate them with `mockall::automock` for tests. [PROPOSED]
-- Place every item by kind in its own file named `<name>.<kind>.rs` (`repositories/login_request.repository.rs`, `usecases/get_login_request.usecase.rs`, `controllers/...`, `entities/...`); never a catch-all `ports.rs`. Unit tests go in `__tests__/`. See `structure-guide-backend.md`.
+- Place every item by module and kind in its own file named `<name>.<kind>.rs` (`modules/login_request/repositories/login_request.repository.rs`, `modules/login_request/usecases/get_login_request.usecase.rs`, ...); never a catch-all `ports.rs` and never use cases of several modules in one folder. Unit tests go in `__tests__/`. See `structure-guide-backend.md`.
 - Inject dependencies as `Arc<dyn Port>` (use `async_trait` for async ports). [PROPOSED]
 - Do not use `unwrap`/`expect` outside tests and `bootstrap`. [PROPOSED]
 
 ## Workspace layout
 ```text
 Cargo.toml                    # [workspace] members = ["crates/*"]
-crates/domain/                # entities, value objects, DomainError
-crates/application/           # use cases, ports (traits), application errors
+crates/domain/                # src/modules/<module>/entities, value_objects, errors
+crates/application/           # src/modules/<module>/repositories, ports, usecases; src/shared/
 crates/adapters-postgres/     # sqlx repositories, tests/ (integration)
 crates/adapters-http/         # axum router, handlers, DTOs, problem+json, utoipa
 crates/bootstrap/             # main.rs, config, wiring
@@ -31,7 +31,7 @@ Source: docs/decisions/phase-2-decisions.md.
 
 ## Ports and use cases
 ```rust
-// crates/application/src/repositories/appointment.repository.rs
+// crates/application/src/modules/appointments/repositories/appointment.repository.rs
 #[cfg_attr(test, mockall::automock)]
 #[async_trait::async_trait]
 pub trait AppointmentRepository: Send + Sync {
@@ -39,7 +39,7 @@ pub trait AppointmentRepository: Send + Sync {
     async fn save(&self, appointment: &Appointment) -> Result<(), RepositoryError>;
 }
 
-// crates/application/src/usecases/cancel_appointment.usecase.rs
+// crates/application/src/modules/appointments/usecases/cancel_appointment.usecase.rs
 pub struct CancelAppointment { repo: Arc<dyn AppointmentRepository>, clock: Arc<dyn Clock> }
 impl CancelAppointment {
     pub async fn execute(&self, id: AppointmentId) -> Result<(), CancelError> {
@@ -85,7 +85,7 @@ Source: docs/decisions/phase-2-decisions.md (thiserror per layer, RFC 7807).
 
 ## Thin handler and OpenAPI
 ```rust
-// crates/adapters-http/src/controllers/appointment.controller.rs
+// crates/adapters-http/src/modules/appointments/controllers/appointment.controller.rs
 #[utoipa::path(post, path = "/appointments/{id}/cancel",
     params(("id" = Uuid, Path)),
     responses((status = 204), (status = 404, body = Problem, content_type = "application/problem+json"),
@@ -107,6 +107,7 @@ let app = adapters_http::router(AppState { cancel });
 axum::serve(TcpListener::bind(&config.addr).await?, app).await?;
 ```
 [PROPOSED]
+With modules, the lines that build a module's repository and use cases live in `crates/bootstrap/src/modules/<module>/<module>.module.rs`; `main.rs` builds the pool and configuration and merges the module routers.
 
 ## Open conflicts
 None (no team documents available yet). See `knowledge/guides/GAPS.md`.

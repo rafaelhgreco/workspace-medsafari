@@ -14,7 +14,7 @@ Status: the team documents expected in `knowledge/_sources/{commons,backend,data
 | 2 | Authentication mechanism (JWT, session, provider) | backend/middlewares | Not decided; guide gives only a skeleton |
 | 3 | Tool to generate the Angular client from OpenAPI | frontend/development | `ng-openapi-gen` into `src/app/core/api/` |
 | 4 | How the frontend gets `openapi.json` and the route exposing it | backend/code-patterns, frontend/development | `GET /api-docs/openapi.json`; committed copy or running backend |
-| 5 | nextest filterset syntax for profiles `unit`/`integration` | backend/testing-guide-unit | `default-filter` with `package(...)` and `kind(test)`; confirm with `cargo nextest list` on the pinned version |
+| 5 | nextest filterset syntax for profiles `unit`/`integration` | backend/testing-guide-unit | Confirmed 2026-11-23 on `repos/medsafari`: `default-filter` with `package(...)` and `binary(...)` (`.config/nextest.toml`); `cargo nextest list --profile unit` unchanged by the module migration |
 | 6 | Vitest split between `test:unit` and `test:component` | frontend/testing | Files `*.spec.ts` vs `*.component.spec.ts` |
 | 7 | Supporting crates and versions (tracing, tower-http, async-trait, mockall, testcontainers-modules) | backend, database | Named without pinned versions |
 | 8 | Test and migration naming | commons/testing, database/development | `ac_<nn>_br_<nn>_<behavior>`; `<verb>_<object>` migrations |
@@ -24,8 +24,17 @@ Status: the team documents expected in `knowledge/_sources/{commons,backend,data
 | 12 | Dot-separated Rust file names need one `#[path]` line per module in `mod.rs`; the alternative is `<name>_<kind>.rs` with no attribute | backend/structure | Keep the decided `<name>.<kind>.rs` and the `#[path]` lines |
 | 13 | Kinds beyond the four decided (`.port`, `.value_object`, `.error`, `.dto`, Angular kinds) and the crate-level exceptions (`lib.rs`, `main.rs`, `router.rs`, `openapi.rs`, `config.rs`, `error.rs`) | commons/project-structure, backend/structure, frontend/structure | As listed in the guides |
 | 14 | Legacy migration policy: a task moves only the items it touches; a bulk move is its own `refactor` demand | commons/project-structure | As written |
-| 15 | `cargo nextest list --profile unit` after the move (filters use package and kind, not module paths, so no change expected) | backend/structure, backend/testing-unit | Confirm on the first migrated crate |
+| 15 | `cargo nextest list --profile unit` after the move | backend/structure, backend/testing-guide-unit | Confirmed 2026-11-23: same 175 names as the baseline (plus 5 guard tests), `unit` and `integration` green |
 | 16 | The graphify snapshot (commit `7f1a5fea`, 2026-11-18) differs from the guides: frontend lint is Biome (not ESLint) and `package.json` has no `test:unit`/`test:component` scripts; the snapshot also has no `ports.rs` | frontend/development, frontend/testing-unit | Confirm against `~/Documentos/medsafari` and update the guides in a separate change |
+| 17 | Module granularity: one module per business capability or aggregate; who approves a new module (Turtle names it in the tech spec) | commons/project-structure, backend/structure | As written (accepted 2026-11-23) |
+| 18 | `modules/` also in `adapters-http` and `adapters-postgres` (the request named `domain`, `application` and `bootstrap`); without it controllers and repository implementations would pile up in one folder | backend/structure | Apply to the adapters too (accepted 2026-11-23) |
+| 19 | Cross-cutting kernel as `<crate>/src/shared/` (sibling of `modules/`) vs a module named `shared` | backend/structure | `src/shared/`, modules may depend on it, never the reverse (accepted 2026-11-23) |
+| 20 | Cross-module dependencies: only through the public API, declared in the tech spec, no cycles; enforced by Rust privacy (`E0603` proven on the real backend), the edge listing in VERIFY and `bootstrap/tests/architecture.rs` | commons/project-structure, backend/structure | As written; the architecture test checks root structure, edges, cycles and `shared` (accepted 2026-11-23, implemented in `refactor/backend-modules`) |
+| 21 | Errors per module instead of one crate-wide `DomainError`; `ApiError` stays crate-level with `From<ModuleError>` per module | backend/structure | As written (accepted 2026-11-23) |
+| 22 | Shape of per-module wiring in `bootstrap` (`<module>.module.rs`, `providers/`) | backend/structure, backend/code-patterns | Confirmed 2026-11-23: each module exposes `build(...)`, `wiring.rs` only composes; behavior unchanged |
+| 23 | Tests of crate-level files live in `<crate>/src/__tests__/<name>.test.rs` (already the practice in `adapters-http`, `application`, `bootstrap`) | backend/structure, commons/project-structure | As written (accepted 2026-11-23) |
+| 24 | Initial module cut: `health`, `auth`, `progress` (+ `shared`); `auth` is split only when a new flow justifies it | backend/structure | Done 2026-11-23 on `refactor/backend-modules`; result in "Initial module cut" of the structure guide |
+| 25 | `From<...Error> for ApiError` stays in `adapters-http/src/error.rs`; the guide proposes one per module controller file | backend/structure | Decide whether to move each conversion into its module (separate change) |
 
 ## Pending reconciliation
 When the team documents are added under `knowledge/_sources/`, rerun the guides pass: reconcile each `[PROPOSED]` item below, cite `Source: _sources/...`, and record any conflict with a Phase 2 decision under "Open conflicts" without choosing alone.
@@ -66,21 +75,16 @@ When the team documents are added under `knowledge/_sources/`, rerun the guides 
 
 ### backend/structure-guide-backend.md
 
-- L22: | `domain` | `value_objects/` | `.value_object.rs` [PROPOSED] | value objects |
-- L23: | `domain` | `errors/` | `.error.rs` [PROPOSED] | `DomainError` and variants |
-- L25: | `application` | `ports/` | `.port.rs` [PROPOSED] | other ports: `Clock`, id generator, notifier |
-- L28: | `adapters-http` | `dtos/` | `.dto.rs` [PROPOSED] | request/response DTOs with `ToSchema` |
-- L32: Crate-level singletons stay as plain files at `src/`: `lib.rs`, `main.rs`, `router.rs`, `openapi.rs`, `config.rs`, and the HTTP `ApiError` mapping (`error.rs`). [PROPOSED]
-- L126: Source: layout and `__tests__` decision from the project owner (2026-11-19); the `#[path]` mechanics, `mockall` with the `mocks` feature, `cargo fmt --check` over test files and `cargo clippy --all-targets -- -D warnings` were verified on a proof workspace (cargo 1.97). `cargo nextest` was not run there; module-path filtering is [PROPOSED] until confirmed with `cargo nextest list --profile unit`. Items marked [PROPOSED] extend the decision.
+- L37: - Crate-level files stay as plain files at `src/` (full list in "Initial module cut"). In `adapters-http`, `error.rs` keeps the `From<...Error> for ApiError` conversions; moving each one into the module's controller file is still open. [PROPOSED]
+- L201: Source: layout, `__tests__` and `modules/` decisions from the project owner (2026-11-19 and 2026-11-23). Mechanics verified on a proof workspace and then on the real backend: `cargo nextest` profiles `unit` (filters by package, no change needed) and `integration`, `cargo fmt --check`, `cargo clippy --workspace --all-targets -- -D warnings`, `E0603` on an import of another module's kind folder, both checks above, per-module wiring in `bootstrap`. Items #15 and #22 of `knowledge/guides/GAPS.md` are confirmed by this run. Items still marked [PROPOSED] extend the decision and need confirmation.
 
 ### backend/testing-guide-unit-backend.md
 
-- L10: - Name tests `ac_<nn>_br_<nn>_<behavior>` so they trace to the story. [PROPOSED]
-- L11: - Use builders/factories for test data; keep each test readable in one screen. [PROPOSED]
-- L12: - Make the clock and id generation ports so tests are deterministic. [PROPOSED]
-- L15: - Use `#[tokio::test]` for async tests; avoid `sleep`. [PROPOSED]
-- L29: `unit` excludes the `adapters-postgres` integration test binaries (`crates/adapters-postgres/tests/`); `integration` runs only them. The exact `default-filter`/`kind(test)` filterset syntax depends on the nextest version: confirm with `cargo nextest list`. [PROPOSED]
-- L56: [PROPOSED]
+- L11: - Name tests `ac_<nn>_br_<nn>_<behavior>` so they trace to the story. [PROPOSED]
+- L12: - Use builders/factories for test data; keep each test readable in one screen. [PROPOSED]
+- L13: - Make the clock and id generation ports so tests are deterministic. [PROPOSED]
+- L16: - Use `#[tokio::test]` for async tests; avoid `sleep`. [PROPOSED]
+- L57: [PROPOSED]
 
 ### commons/code-patterns-general.md
 
@@ -92,18 +96,15 @@ When the team documents are added under `knowledge/_sources/`, rerun the guides 
 - L14: - Keep functions small and single-purpose; extract when a name explains better than a comment. [PROPOSED]
 - L15: - Do not hand-edit generated files (OpenAPI client, `.sqlx/` metadata). [PROPOSED]
 - L16: - Leave no dead code and no unexplained placeholder comments. [PROPOSED]
-- L40: [PROPOSED]
-- L47: [PROPOSED]
-- L63: None (no team documents available yet). Reconcile every `[PROPOSED]` item when team documents arrive; see `knowledge/guides/GAPS.md`.
+- L41: [PROPOSED]
+- L48: [PROPOSED]
+- L64: None (no team documents available yet). Reconcile every `[PROPOSED]` item when team documents arrive; see `knowledge/guides/GAPS.md`.
 
 ### commons/project-structure-general.md
 
-- L24: | Other port (clock, id generator, notifier) | `.port` [PROPOSED] | `application` / - |
-- L25: | Value object | `.value_object` [PROPOSED] | `domain` / - |
-- L26: | HTTP DTO | `.dto` [PROPOSED] | `adapters-http` / - |
-- L50: - A task that changes an item still living in a legacy file (`ports.rs`, an inline `mod tests`) moves that item, and its tests, to the new layout in the same task. [PROPOSED]
-- L51: - Migrating the rest of a legacy file is its own `refactor` demand; do not mix a bulk move with feature work. [PROPOSED]
-- L61: Source: layout and `__tests__` decision from the project owner (2026-11-19); the Rust mechanics were checked by compiling a proof workspace (cargo 1.97: `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test`). Items marked [PROPOSED] extend that decision and need confirmation; see `knowledge/guides/GAPS.md`.
+- L62: - A task that changes an item still living in a legacy file (`ports.rs`, an inline `mod tests`) moves that item, and its tests, to the new layout (module, kind folder, `__tests__/`) in the same task. [PROPOSED]
+- L63: - Migrating the rest of a legacy file is its own `refactor` demand; do not mix a bulk move with feature work. [PROPOSED]
+- L75: Source: layout and `__tests__` decision from the project owner (2026-11-19); the `modules/` decision is from 2026-11-23; the Rust mechanics were checked by compiling proof workspaces (cargo 1.97: `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test`). Items marked [PROPOSED] extend that decision and need confirmation; see `knowledge/guides/GAPS.md`.
 
 ### commons/testing-guide-unit-general.md
 
@@ -192,10 +193,10 @@ When the team documents are added under `knowledge/_sources/`, rerun the guides 
 | backend/code-patterns-backend.md | 7 |
 | backend/development-guide-backend.md | 4 |
 | backend/middlewares-guide-backend.md | 12 |
-| backend/structure-guide-backend.md | 6 |
-| backend/testing-guide-unit-backend.md | 6 |
+| backend/structure-guide-backend.md | 2 |
+| backend/testing-guide-unit-backend.md | 5 |
 | commons/code-patterns-general.md | 11 |
-| commons/project-structure-general.md | 6 |
+| commons/project-structure-general.md | 3 |
 | commons/testing-guide-unit-general.md | 5 |
 | database/code-patterns-database.md | 11 |
 | database/development-guide-database.md | 8 |
@@ -204,4 +205,4 @@ When the team documents are added under `knowledge/_sources/`, rerun the guides 
 | frontend/development-guide-frontend.md | 7 |
 | frontend/structure-guide-frontend.md | 5 |
 | frontend/testing-guide-unit-frontend.md | 7 |
-| **Total** | 108 |
+| **Total** | 100 |

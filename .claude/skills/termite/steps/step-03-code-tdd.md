@@ -8,6 +8,7 @@ Goal: implement each plan task, one commit per task. Resume rule: start at the f
    - YOU write the tests and the code with Read/Edit/Write; file-operator only runs commands.
    - Backend unit tests: `cargo nextest` + `mockall` mocks of ports (traits). Frontend: Vitest.
    - Respect the hexagonal dependency rule; adapters implement ports, domain has no I/O.
+   - Work inside the task's module (`modules/<module>/`); cross-module imports go only through the target module's public `mod.rs`.
    - RED starts by creating the test file under `__tests__/` (Rust: `__tests__/<name>.<kind>.test.rs`, wired from the source file with `#[cfg(test)] #[path = "__tests__/<name>.<kind>.test.rs"] mod tests;`; Angular: `__tests__/<name>.<kind>.spec.ts`), per `knowledge/guides/commons/project-structure-general.md`.
 3. If `test_scope = unit+integration`: the cycle also covers an integration test of the adapter in `crates/adapters-postgres/tests/`, with testcontainers-rs and a real Postgres; apply migrations in the container with `sqlx::migrate!`. Confirm `docker info` still works.
 4. Run the tests for the task (file-operator, raw output) until green.

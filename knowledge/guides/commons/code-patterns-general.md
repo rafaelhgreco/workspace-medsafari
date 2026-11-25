@@ -29,6 +29,7 @@ Source: docs/decisions/phase-2-decisions.md (Conventional Commits, `<type>/<slug
 | Thing | Convention | Example |
 |---|---|---|
 | Rust crate (workspace) | kebab-case | `adapters-postgres` |
+| Module | snake_case, same name in every crate | `appointments` |
 | Rust file | snake_case + kind suffix | `cancel_appointment.usecase.rs` |
 | Rust module | snake_case, `<name>_<kind>` | `cancel_appointment_usecase` |
 | Rust type / trait | UpperCamelCase | `AppointmentRepository` |

@@ -12,6 +12,9 @@ Goal: append the remaining sections to `delivery/02-tech-spec.md`.
 - Every AC appears in at least one item's refs; every BR as well.
 - Name the files of each item with the same layout paths as the impact table (`<kind-folder>/<name>.<kind>.<ext>` and its `__tests__/` file), per `knowledge/guides/commons/project-structure-general.md`.
 
+## 2b. Modules
+`## Modules`: list the modules the demand creates or changes and the dependencies between modules (`<module> -> <module>`, only through the target's public `mod.rs`). Reject cycles and any dependency from `shared/` to a module.
+
 ## 3. Risks
 `## Risks`: table `| ID | risk | impact | mitigation |`. Include migration risks (backward compatibility, locks, data backfill) when persistence items exist.
 
