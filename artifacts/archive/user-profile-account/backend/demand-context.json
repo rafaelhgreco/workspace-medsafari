@@ -1,0 +1,146 @@
+{
+  "id": "DEM-20261125-user-profile-account-backend",
+  "slug": "user-profile-account",
+  "part": "backend",
+  "dependsOn": [],
+  "title": "Perfil, selos e conta - backend",
+  "createdAt": "2026-11-25T12:40:46Z",
+  "demandType": "backend",
+  "targetRepositories": [
+    {
+      "name": "medsafari",
+      "path": "repos/medsafari",
+      "graphifyPath": "knowledge/repositories/medsafari/graphify-out"
+    }
+  ],
+  "branches": [
+    {
+      "repo": "medsafari",
+      "name": "feat/user-profile-account-backend",
+      "type": "feat",
+      "createdBy": "turtle",
+      "createdAt": "2026-11-25T15:23:06Z"
+    }
+  ],
+  "status": "archived",
+  "verifyRetries": 1,
+  "approvals": [
+    {
+      "stage": "tiger_review",
+      "approver": "Rafael Henrique",
+      "date": "2026-11-25T13:30:29Z"
+    },
+    {
+      "stage": "turtle_review",
+      "approver": "Rafael Henrique",
+      "date": "2026-11-25T15:22:59Z"
+    },
+    {
+      "stage": "termite_plan",
+      "approver": "Rafael Henrique",
+      "date": "2026-11-25T15:30:40Z"
+    },
+    {
+      "stage": "termite_verify",
+      "approver": "Rafael Henrique",
+      "date": "2026-11-25T21:31:08Z"
+    }
+  ],
+  "graphify": {
+    "requestedAt": "2026-11-25T21:31:15Z",
+    "repos": [
+      "medsafari"
+    ],
+    "confirmedBy": "Rafael Henrique",
+    "confirmedAt": "2026-11-25T21:41:10Z"
+  },
+  "artifacts": {
+    "delivery": {
+      "functionalStories": "delivery/01-functional-stories.md",
+      "techSpec": "delivery/02-tech-spec.md",
+      "implementationPlan": "delivery/03-implementation-plan.md",
+      "verificationReport": "delivery/04-verification-report.md"
+    },
+    "design": []
+  },
+  "history": [
+    {
+      "from": null,
+      "to": "created",
+      "at": "2026-11-25T12:40:46Z",
+      "by": "tiger"
+    },
+    {
+      "from": "created",
+      "to": "tiger_in_progress",
+      "at": "2026-11-25T12:40:46Z",
+      "by": "tiger"
+    },
+    {
+      "from": "tiger_in_progress",
+      "to": "tiger_review",
+      "at": "2026-11-25T12:43:11Z",
+      "by": "tiger"
+    },
+    {
+      "from": "tiger_review",
+      "to": "turtle_in_progress",
+      "at": "2026-11-25T13:32:06Z",
+      "by": "turtle"
+    },
+    {
+      "from": "turtle_in_progress",
+      "to": "turtle_review",
+      "at": "2026-11-25T13:36:05Z",
+      "by": "turtle"
+    },
+    {
+      "from": "turtle_review",
+      "to": "termite_plan",
+      "at": "2026-11-25T15:23:06Z",
+      "by": "turtle"
+    },
+    {
+      "from": "termite_plan",
+      "to": "termite_code",
+      "at": "2026-11-25T15:30:40Z",
+      "by": "termite"
+    },
+    {
+      "from": "termite_code",
+      "to": "termite_verify",
+      "at": "2026-11-25T18:31:46Z",
+      "by": "termite"
+    },
+    {
+      "from": "termite_verify",
+      "to": "termite_code",
+      "at": "2026-11-25T18:33:36Z",
+      "by": "termite"
+    },
+    {
+      "from": "termite_code",
+      "to": "termite_verify",
+      "at": "2026-11-25T18:34:19Z",
+      "by": "termite"
+    },
+    {
+      "from": "termite_verify",
+      "to": "awaiting_graphify",
+      "at": "2026-11-25T21:31:15Z",
+      "by": "termite"
+    },
+    {
+      "from": "awaiting_graphify",
+      "to": "done",
+      "at": "2026-11-25T21:41:10Z",
+      "by": "termite"
+    },
+    {
+      "from": "done",
+      "to": "archived",
+      "at": "2026-11-25T21:41:11Z",
+      "by": "termite"
+    }
+  ]
+}
